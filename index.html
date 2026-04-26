@@ -168,6 +168,21 @@
   details.ref .ref-body p { margin: 0 0 10px; }
   details.ref .ref-body .lead { color: var(--gold); font-weight: 600; }
 
+  .target-pill {
+    display: inline-block;
+    margin-top: 8px;
+    background: rgba(245,199,104,0.1);
+    border: 1px solid rgba(245,199,104,0.35);
+    color: var(--gold);
+    padding: 5px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
+  }
+  .ex-cadence {
+    font-size: 11px; letter-spacing: 0.4px;
+    color: var(--gold); opacity: 0.85;
+    margin-top: 2px; font-weight: 500;
+  }
+
   /* ===== Lessons ===== */
   .lesson-meta {
     font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
@@ -343,7 +358,8 @@
   <section class="view active" id="view-today">
     <div class="card">
       <h2 id="todayDate">Today</h2>
-      <div class="sub">Tap each exercise as you finish a session. Tap the note button to log details.</div>
+      <div class="sub" id="todaySub">Tap each exercise as you finish a session. Tap the note button to log details.</div>
+      <div class="target-pill" id="targetPill"></div>
     </div>
     <div id="exerciseList"></div>
     <div class="card">
@@ -419,96 +435,67 @@ const LS_KEY = "alphi_training_v1";
 
 const EXERCISES = [
   {
-    id: "attention",
-    name: "Manage Attention-Seeking Behavior",
-    body: [
-      "Ignore all demanding or attention-seeking behavior from your dog, including nudging, whining, or dropping a toy at your feet. Instead, demonstrate leadership by initiating and requesting attention on your terms. Do not look at or interact with your dog when they request attention.",
-      "Wait until your dog has left you and found something else to do, then begin play or invite them over to interact. If they continue to seek or demand your attention, STAND and \"BAH\". Refer to the Passive Influence handout for more details."
-    ]
-  },
-  {
-    id: "door_control",
-    name: "Door Control",
-    body: [
-      "You must lead through the house, yard, through the door or gate, and onto the driveway or sidewalk outside. Claim your space in front of every door or gate before inviting your dog through.",
-      "To achieve this, use \"BAH\" as you face your dog and claim the space at each exit point. Once your dog is relaxed and focused, you can calmly invite them through."
-    ]
-  },
-  {
-    id: "recall",
-    name: "Coming When Called (Recall)",
-    body: [
-      "Start this exercise off leash inside the home with no distractions. Crouch and call your dog's name, followed by \"COME\" or \"HERE\". Encourage your dog, praising every step they take in your direction. Do not grab or hold your dog — only use your hands to pet and praise.",
-      "When practicing outside and on leash, allow your dog to wander off and become distracted. Use their name along with your happy \"COME\" or \"HERE\". If your dog doesn't immediately start towards you, simultaneously and gently flick and release the leash until your dog heads in your direction. Don't grab or reach toward your dog. Have them come to you entirely on their own, then lavishly praise.",
-      "Over time and with practice, your dog will begin to respond as soon as they hear their name. Never allow your dog off leash until they are consistently responding in all situations. Daily practice will result in faster results.",
-      "You can stand and use the refocus word \"BAH\" to remind your dog of what you require if they refuse to respond to the gentle flick and release of the leash. As your dog becomes proficient, introduce distractions while you work at refocusing your dog back to you. Don't forget your praise and have fun!"
-    ]
-  },
-  {
-    id: "distance_control",
-    name: "Distance Control",
-    body: [
-      "This exercise is designed to educate your dog to respond to you regardless of distractions, and helps prevent your dog from chasing or running away from you. It is best if first performed off leash and in your home. If you are in an enclosed, secure area and your dog already responds well to your directives, you can conduct this exercise outdoors, provided that your dog cannot escape. The least-preferable option is to conduct this exercise on a long leash.",
-      "Start by using a low-level distraction. Once you see a good response, add higher value distractions, such as toys, balls, food, etc. If you lose control of any situation, return to lower value items and only move on when you are consistently achieving optimum results. If your dog is of a determined nature, you might have to clip on a leash to reinforce this exercise.",
-      "Begin by calling your dog to you. When they arrive, praise but do not pet them. As they start to move away, \"BAH\" and CLAP. Crouch slightly, encouraging your dog to come to you. STAND as they reach you. Do not tell your dog to \"sit\" or \"stay\". Do not grab or hold onto them. Keep repeating until your dog settles (lays or sits).",
-      "Once they have settled, praise and give your dog some pets. Avoid moving toward your dog — it is better to back away. This important exercise takes time to perfect, and practice makes perfect. The ultimate goal is to have your dog stop what they are doing and immediately return to you."
-    ]
-  },
-  {
-    id: "front_door",
-    name: "Claiming Front Door 'No-Go Zone'",
-    body: [
-      "If your dog rushes to answer the front door every time someone visits, you need to claim the front door area as your own. Position yourself between the dog and the door. \"BAH\" and CLAP, and guide your dog to an area away from the door. Back up towards the door and address any of your dog's movements to follow you.",
-      "Greet your guest, invite them in, and ignore the dog.",
-      "If your dog is fearful or aggressive, you can have your visitor toss a treat onto the floor, making sure they avoid eye contact.",
-      "There is no need for your dog to sit and stay; they just need to learn that answering the door is not their responsibility and to go and relax elsewhere."
-    ]
-  },
-  {
-    id: "stairs",
-    name: "Stairs",
-    body: [
-      "With your dog on a leash, practice going up and down the stairs.",
-      "If your dog begins to pass you, \"BAH\" so they stop. If your dog passes you, turn and walk in the opposite direction. Teach your dog to follow two steps behind so they never get in front of you."
-    ]
-  },
-  {
-    id: "attentiveness",
-    name: "Attentiveness Training",
-    body: [
-      "This should be done every time you take your dog for a walk. The purpose is to teach your dog to focus on you, rather than distractions.",
-      "Start inside the house or backyard. Holding the end of the leash, purposefully walk off in a direction with your dog following, watching them out of the corner of your eye. If your dog starts to advance ahead of you, turn around and walk in the opposite direction. Continue until your dog starts to watch you and anticipate your movements. This may take 30 seconds or 30 minutes (or more), and can serve as a substitute for a normal walk. For especially exuberant dogs, use a long leash to introduce this exercise.",
-      "Initially, walk a predictable grid. Do not proceed to a more distracting environment (e.g. a park) or start walking your dog in the normal manner until their attention is on you. Vary your pace and direction to keep them guessing. Remember that this is a zig-zagging, follow-the-leader exercise — your dog should not be allowed to get even a little in front of you."
-    ]
-  },
-  {
-    id: "walking",
-    name: "Walking",
-    body: [
-      "Proper leash walking is an important part of being a leader. Your initial goal is not to make time or cover distance on walks — instead, limit the routes you take and walk only one or two steps at a time at first to improve timing and communication with your dog.",
-      "Keep your dog's front legs in line with or behind your legs. If your dog begins to pass you, use a gentle flick and release on the collar or harness to tell them they should not be ahead of you. Keep your leash loose. A tight leash will only encourage your dog to pull to the end of the leash.",
-      "Immediately praise your dog when they are in the right position."
-    ]
-  },
-  {
     id: "barking",
     name: "Barking",
+    cadence: "When it happens",
     body: [
-      "Timing is important when it comes to solving your dog's barking problems. Set up the exercises as explained by your Bark Busters trainer and be sure to refocus your dog when you catch them in the act.",
-      "Consistency and patience are the key ingredients. You must catch your dog while barking — timing is key to solving the problem.",
-      "Inside: As soon as your dog begins to bark, use a strong \"BAH\". Praise when the barking stops and your dog is quiet for a few seconds. If your dog barks after you leave, you should \"BAH!\" from outside the door.",
-      "Outside: If your dog barks along a fence, use a training aid simultaneously with a strong \"BAH\". Praise when your dog stops barking. Call your trainer if your dog is not responding or reverts back to barking."
+      "Timing is important when it comes to solving your dog's barking problems. You must catch Alphi while barking — timing is key. Consistency and patience are the key ingredients.",
+      "Inside: As soon as he begins to bark, use a strong \"BAH\". Praise when the barking stops and he's quiet for a few seconds. If he barks after you leave, \"BAH!\" from outside the door.",
+      "Outside: If he barks along a fence, use a training aid simultaneously with a strong \"BAH\". Praise when he stops. Call the trainer if he's not responding or reverts back."
+    ]
+  },
+  {
+    id: "claiming_space",
+    name: "Claiming Personal Space",
+    cadence: "Throughout the day",
+    body: [
+      "Maintain a \"hula hoop\" space around you (1–2 feet). Correct any uninvited intrusion using escalating correction levels — start with tall posture and a deep \"Hey\", escalate to a firm hand clap, then a spray bottle if needed.",
+      "Let Alphi approach on YOUR terms, not his. Active-influence behaviors like jumping, pawing, nudging are attempts at control — correct even minor forms to prevent bigger problems.",
+      "Use gentle but firm corrections (e.g., nose taps, \"Hey\") to show boundaries. Respect arises when you consistently enforce them."
     ]
   },
   {
     id: "jumping",
     name: "Jumping Up",
+    cadence: "When it happens",
     body: [
-      "Jumping is a habit many dog owners wish they had addressed when their dog was a puppy. It is most effective to address this behavior BEFORE your dog actually jumps. You may need to use training aids with this exercise.",
-      "As your dog tenses to jump, stand tall and \"BAH\". Give immediate praise when your dog has their four paws on the floor. It is important not to overreact and push your dog or step back — these actions only serve to keep your dog repeating the behavior."
+      "Most effective to address BEFORE he actually jumps. As Alphi tenses to jump, stand tall and \"BAH\". Give immediate praise when his four paws are on the floor.",
+      "Don't overreact, push him back, or step away — those actions reinforce the behavior."
+    ]
+  },
+  {
+    id: "front_door",
+    name: "Claiming Front Door",
+    cadence: "1–2× a day",
+    body: [
+      "Recreate guest arrival: knock on the door, then correct immediately at his first bark. Position yourself between Alphi and the door. \"BAH\" and CLAP, guide him to an area away from the door, then back up toward the door and address any movement to follow you.",
+      "Greet your imagined guest, invite them in, and ignore the dog. Goal: he learns answering the door isn't his responsibility — go relax elsewhere.",
+      "Run this 1–2 times a day until the front door is consistently calm."
+    ]
+  },
+  {
+    id: "door_control",
+    name: "Door Control",
+    cadence: "Every exit",
+    body: [
+      "You lead through the house, yard, doors, gates, and out to the driveway or sidewalk. Claim your space in front of every door or gate before inviting Alphi through.",
+      "Use \"BAH\" as you face him and claim the space at each exit point. Once he's relaxed and focused, calmly invite him through."
+    ]
+  },
+  {
+    id: "attentiveness",
+    name: "Attentiveness on Walks",
+    cadence: "Every walk",
+    body: [
+      "Every walk, the purpose is to teach Alphi to focus on you rather than distractions. Holding the end of the leash, walk off in a direction with him following — watch him out of the corner of your eye.",
+      "If he starts to advance ahead, turn around and walk in the opposite direction. Continue until he watches you and anticipates your movements. May take 30 seconds or 30 minutes — that IS the walk.",
+      "Walk a predictable grid first. Vary pace and direction to keep him guessing. This is a zig-zagging, follow-the-leader exercise — never let him get even a little in front of you."
     ]
   }
 ];
+
+// Daily target shown on Today screen header
+const DAILY_TARGET = "~10 minutes total · Front door 1–2× a day";
 
 // ========== LESSONS ==========
 // Notes from each trainer session. Add new entries to the top.
@@ -695,6 +682,7 @@ function renderToday() {
   document.getElementById("todayDate").textContent = fmtDate(parseDate(todayKey()));
   document.getElementById("dayNum").textContent = dayNumber();
   document.getElementById("weekNum").textContent = weekNumber() + " of 5";
+  document.getElementById("targetPill").textContent = "🎯 " + DAILY_TARGET;
   const log = getLog(todayKey());
   const host = document.getElementById("exerciseList");
   host.innerHTML = "";
@@ -706,7 +694,10 @@ function renderToday() {
     row.innerHTML = `
       <div class="ex-head">
         <button class="ex-check" onclick="toggleCheck('${ex.id}')" aria-label="Mark ${escapeHtml(ex.name)}">✓</button>
-        <div class="ex-title">${escapeHtml(ex.name)}</div>
+        <div class="ex-title">
+          ${escapeHtml(ex.name)}
+          ${ex.cadence ? `<div class="ex-cadence">${escapeHtml(ex.cadence)}</div>` : ""}
+        </div>
         <div class="ex-counter"><b>${sessionCount}</b> ${sessionCount === 1 ? "day" : "days"}</div>
       </div>
       <div class="ex-actions">
