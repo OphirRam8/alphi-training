@@ -138,10 +138,29 @@
   }
   .ex.done .ex-title { color: var(--accent-strong); }
   .ex-counter {
-    font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase;
-    color: var(--muted); flex-shrink: 0; padding-top: 3px;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+    flex-shrink: 0; padding-top: 2px;
   }
-  .ex-counter b { color: var(--accent); font-weight: 800; }
+  .today-count {
+    background: var(--accent); color: #ffffff;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.4px;
+    padding: 3px 10px; border-radius: 999px;
+    box-shadow: 0 2px 6px rgba(45,122,82,0.20);
+    user-select: none; -webkit-user-select: none;
+  }
+  .all-time {
+    font-size: 10px; letter-spacing: 0.6px; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+  }
+  .all-time b { color: var(--accent); font-weight: 800; }
+  .ex-btn.reset { color: var(--warn); border-color: rgba(196,82,26,0.3); }
+  .ex-btn.reset:hover { color: var(--warn); border-color: var(--warn); background: rgba(196,82,26,0.06); }
+  /* How To section divider — separates daily exercises from reference-only */
+  .ref-divider {
+    margin: 18px 0 8px; padding: 0 4px;
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold); font-weight: 800;
+  }
   .ex-actions {
     display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;
   }
@@ -379,8 +398,7 @@
   <section class="view active" id="view-today">
     <div class="card">
       <h2 id="todayDate">Today</h2>
-      <div class="sub" id="todaySub">Tap each exercise as you finish a session. Tap the note button to log details.</div>
-      <div class="target-pill" id="targetPill"></div>
+      <div class="sub" id="todaySub">Tap a card to log a session. Tap again to add another rep. Long-press the count to reset.</div>
     </div>
     <div id="exerciseList"></div>
     <div class="card">
@@ -454,14 +472,20 @@
 // ========== DATA ==========
 const LS_KEY = "alphi_training_v1";
 
+// All Bark Busters Training Exercises from the official handout.
+// `daily: true` = recommended for daily practice (shown in Today + Schedule).
+// Others are reference-only (shown in How To).
 const EXERCISES = [
+  // ===== Daily 6 (Today + Schedule) =====
   {
     id: "barking",
     name: "Barking",
     cadence: "When it happens",
+    daily: true,
     body: [
-      "Timing is important when it comes to solving your dog's barking problems. You must catch Alphi while barking — timing is key. Consistency and patience are the key ingredients.",
-      "Inside: As soon as he begins to bark, use a strong \"BAH\". Praise when the barking stops and he's quiet for a few seconds. If he barks after you leave, \"BAH!\" from outside the door.",
+      "Timing is important when it comes to solving your dog's barking problems. Use the exercises as explained by your Bark Busters trainer and be sure to refocus Alphi when you catch him in the act.",
+      "Consistency and patience are the key ingredients. You must catch him while barking — timing is key.",
+      "Inside: As soon as he begins to bark, use a strong \"BAH\". Praise when the barking stops and he's quiet for a few seconds. If he barks after you leave, \"BAH\" from outside the door.",
       "Outside: If he barks along a fence, use a training aid simultaneously with a strong \"BAH\". Praise when he stops. Call the trainer if he's not responding or reverts back."
     ]
   },
@@ -469,6 +493,7 @@ const EXERCISES = [
     id: "claiming_space",
     name: "Claiming Personal Space",
     cadence: "Throughout the day",
+    daily: true,
     body: [
       "Maintain a \"hula hoop\" space around you (1–2 feet). Correct any uninvited intrusion using escalating correction levels — start with tall posture and a deep \"Hey\", escalate to a firm hand clap, then a spray bottle if needed.",
       "Let Alphi approach on YOUR terms, not his. Active-influence behaviors like jumping, pawing, nudging are attempts at control — correct even minor forms to prevent bigger problems.",
@@ -479,44 +504,153 @@ const EXERCISES = [
     id: "jumping",
     name: "Jumping Up",
     cadence: "When it happens",
+    daily: true,
     body: [
-      "Most effective to address BEFORE he actually jumps. As Alphi tenses to jump, stand tall and \"BAH\". Give immediate praise when his four paws are on the floor.",
-      "Don't overreact, push him back, or step away — those actions reinforce the behavior."
+      "Jumping is a habit many dog owners wished they had addressed when their dog was a puppy. It is most effective to address this behavior BEFORE Alphi actually jumps. You may need to use training aids with this exercise.",
+      "As he tenses to jump, stand tall and \"BAH\". Give immediate praise when his four paws are on the floor.",
+      "It is important not to overreact, push him, or step back — these actions only serve to keep him repeating the behavior."
     ]
   },
   {
     id: "front_door",
-    name: "Claiming Front Door",
+    name: "Claiming Front Door 'No-Go Zone'",
     cadence: "1–2× a day",
+    daily: true,
     body: [
-      "Recreate guest arrival: knock on the door, then correct immediately at his first bark. Position yourself between Alphi and the door. \"BAH\" and CLAP, guide him to an area away from the door, then back up toward the door and address any movement to follow you.",
-      "Greet your imagined guest, invite them in, and ignore the dog. Goal: he learns answering the door isn't his responsibility — go relax elsewhere.",
-      "Run this 1–2 times a day until the front door is consistently calm."
+      "If Alphi rushes to answer the door every time someone visits, you need to claim the front door area as your own. Position yourself between him and the door. \"BAH\" and CLAP, and guide him to an area away from the door. Back up towards the door and address any of his movement to follow you.",
+      "Greet your guest, invite them in, and ignore the dog.",
+      "If he is fearful or aggressive, you can have your visitor toss a treat onto the floor, making sure they avoid eye contact.",
+      "There is no need for him to sit and stay; he just needs to learn that answering the door is not his responsibility and to go relax elsewhere."
     ]
   },
   {
     id: "door_control",
     name: "Door Control",
     cadence: "Every exit",
+    daily: true,
     body: [
-      "You lead through the house, yard, doors, gates, and out to the driveway or sidewalk. Claim your space in front of every door or gate before inviting Alphi through.",
-      "Use \"BAH\" as you face him and claim the space at each exit point. Once he's relaxed and focused, calmly invite him through."
+      "You must lead through the house/yard, through the door/gate, and onto the driveway or sidewalk outside. Claim your space in front of every door or gate before inviting Alphi through.",
+      "To achieve this, use \"BAH\" as you face him and claim the space at each exit point. Once he's relaxed and focused, you can calmly invite him through."
     ]
   },
   {
     id: "attentiveness",
-    name: "Attentiveness on Walks",
-    cadence: "Every walk",
+    name: "Attentiveness Training",
+    cadence: "10 minutes a day",
+    daily: true,
     body: [
-      "Every walk, the purpose is to teach Alphi to focus on you rather than distractions. Holding the end of the leash, walk off in a direction with him following — watch him out of the corner of your eye.",
-      "If he starts to advance ahead, turn around and walk in the opposite direction. Continue until he watches you and anticipates your movements. May take 30 seconds or 30 minutes — that IS the walk.",
-      "Walk a predictable grid first. Vary pace and direction to keep him guessing. This is a zig-zagging, follow-the-leader exercise — never let him get even a little in front of you."
+      "This should be done every time you take Alphi for a walk. The purpose is to teach him to focus on you first, rather than distractions. Start inside the house or backyard. Holding the end of the leash, purposefully walk off in a direction with him following, watching him out of the corner of your eye.",
+      "If he starts to advance ahead, turn around and walk in the opposite direction. Continue this until he starts to watch you and anticipate your movements. May take 30 seconds or 30 minutes (or more), and can serve as a substitute for a normal walk. For especially exuberant dogs, use a long leash to introduce this exercise.",
+      "Initially, walk a predictable grid. Do not proceed to a more distracting environment (e.g. a park) or start walking him in the normal manner until his attention is on you. Vary your pace and direction to keep him guessing. Remember that this is a zig-zagging, follow-the-leader exercise — Alphi should not be allowed to get even a little in front of you."
+    ]
+  },
+
+  // ===== Reference-only (How To tab) =====
+  {
+    id: "attention_seeking",
+    name: "Manage Attention-Seeking Behavior",
+    body: [
+      "Ignore all demanding or attention-seeking behavior from your dog, including nudging, whining, or dropping a toy at your feet. Instead, demonstrate leadership by initiating and managing attention on your terms. Do not look at or interact with your dog when they request attention.",
+      "Wait until your dog has left you and found something else to do, then begin play or invite them over for attention. If they continue to seek or demand your attention, STAND and \"BAH\". Refer to the Passive Influence handout for more details."
+    ]
+  },
+  {
+    id: "door_programming",
+    name: "Door Programming",
+    body: [
+      "Only use internal doors your dog should think about to program your dog. Crack open the door or crate; as your dog moves forward to exit the crate or door, simultaneously and rapidly \"BAH\" and shut the door.",
+      "Repeat until they back away and are waiting, not moving forward. Then invite your dog out. Practice daily, as this exercise can work like magic if performed regularly."
+    ]
+  },
+  {
+    id: "recall",
+    name: "Coming When Called (Recall)",
+    body: [
+      "Start this exercise off leash inside the house with no distractions: Crouch and call your dog's name, followed by \"COME\" or \"HERE\". Encourage your dog, praising them with every step they take in your direction. Do not grab or hold your dog, only use your hands to pet and praise.",
+      "When practicing outside and on leash, allow your dog to wander off and become distracted. Use their name along with your happy \"COME\" or \"HERE\". If your dog doesn't immediately start towards you, simultaneously and gently flick and release the leash until your dog heads in your direction. Do not grab or reach toward your dog. Have them come to you entirely on their own, then lavishly praise.",
+      "Over time and with practice, your dog will begin to respond as soon as they hear their name. Never allow your dog off leash until they are consistently responding in all situations. Daily practice will result in faster results.",
+      "You can stand and use the refocus word \"BAH\" to remind your dog of what you require if they refuse to respond to the gentle flick and release of the leash. As your dog becomes proficient at responding to your requests, introduce distractions while you work at refocusing your dog back to you. Don't forget your praise and have fun!"
+    ]
+  },
+  {
+    id: "distance_control",
+    name: "Distance Control",
+    body: [
+      "This exercise is designed to educate your dog to respond to you, regardless of distractions, and helps prevent your dog from chasing or running away from you. It is best if first performed off leash and in your home. If you are in an enclosed, secure area and your dog already responds well to your directives, you can conduct this exercise outdoors, provided that your dog cannot escape. The least-preferable option is to conduct this exercise on a long leash.",
+      "Start by using a low-level distraction. Once you see a good response, add higher value distractions, such as toys, balls, food, etc. If you lose control of any situation, return to lower value items and only move on when you are consistently achieving optimum results. If your dog is of a determined nature, you may have to clip on a leash to reinforce this exercise.",
+      "Begin by calling your dog to you. When they arrive, praise but do not pet them. As they start to move away, \"BAH\" and CLAP. Crouch slightly, encouraging your dog to come to you. STAND as they reach you. Do not tell your dog to \"sit\" or \"stay\". Do not grab or hold onto them. Keep repeating until your dog settles (lays or sits).",
+      "Once they have settled, praise and give your dog some pats. Avoid moving toward your dog. It is better to back away. This important exercise takes time to perfect, and practice makes perfect! The ultimate goal is to have your dog stop what they are doing and immediately return to you."
+    ]
+  },
+  {
+    id: "stairs",
+    name: "Stairs",
+    body: [
+      "With your dog on a leash, practice going up and down the stairs. If your dog begins to pass you, \"BAH\" so they stop. If your dog passes you, turn and walk in the opposite direction. Teach your dog to follow two steps behind so they never get in front of you."
+    ]
+  },
+  {
+    id: "walking",
+    name: "Walking (Loose Leash)",
+    body: [
+      "Proper leash walking is an important part of being a leader. Your initial goal is not to make time or cover distance on walks — instead, limit the routes you take and walk only one or two steps at a time to improve timing and communication with your dog.",
+      "If your dog begins to pass you, use a gentle flick and release on the collar or harness to tell them they should not be ahead of you. Keep your leash loose. A tight leash will only encourage your dog to pull to the end of the leash.",
+      "Immediately praise your dog when they are in the right position."
+    ]
+  },
+  {
+    id: "back_leash",
+    name: "Back-Leash Training",
+    body: [
+      "Allow your dog to go in front instead of restricting them at your side. Stop walking and give the collar or harness a gentle flick and release. As your dog turns to look at you, lower your height and start stepping backwards, encouraging them to come to you. Position your dog back at your side and continue on your walk."
+    ]
+  },
+  {
+    id: "collar_leash",
+    name: "Collar and Leash Programming",
+    body: [
+      "Dogs have a unique way of knowing who is in charge and test us daily. A simple exercise to demonstrate your leadership is to use your collar and leash as a daily training exercise. Act as though you are going for a walk. Pick up the collar or harness and clip the leash to it. Practice placing it on and off your dog several times a day.",
+      "Be sure to control the exercise by standing your ground and not following your dog or their head around. Hold the collar still and \"BAH\" each time your dog tries to avoid your approach. Praise when your dog moves their head toward the collar opening.",
+      "This exercise also helps to reduce your dog's excitement at walk times. Lots of practice will create a calmer dog."
+    ]
+  },
+  {
+    id: "go_to_bed",
+    name: "Go to Your Bed",
+    body: [
+      "This exercise is used to send your dog to their bed (which can be in the living area or family room) when they are underfoot or appear worried. Place a collar and leash on your dog and lead them to their bed. Point to and pat the bed, while repeating the command \"GO TO YOUR BED\". Praise your dog when they reach their bed.",
+      "Offer your dog a treat (food or toy) and spend some time with them while they are on their bed. Repeat several times. This is not to be treated as a punishment: the bed must be a pleasurable place to be."
+    ]
+  },
+  {
+    id: "mouthing",
+    name: "Mouthing",
+    body: [
+      "A quick and easy way to teach your dog not to mouth is to wiggle your fingers, then FREEZE and \"BAH\" as soon as they go to mouth you. If your dog closes their mouth or licks your hand, praise their decision. Repeat until the mouthing stops. Remember, you must freeze the movement of your hands or legs that your dog is trying to mouth. Immediately praise as soon as the mouthing stops.",
+      "Bitter Apple products are harmless deterrents to help you address a dog that mouths and playfully bites. First, spray the product on an item that you do not want your dog to chew, and give it to your dog so that he gets a good taste of it. Then, spray the product on your hands.",
+      "The scent will remind your dog of the bitter taste and make them less likely to mouth. After this exercise, wash your hands thoroughly to remove the Bitter Apple."
+    ]
+  },
+  {
+    id: "chewing",
+    name: "Chewing",
+    body: [
+      "Most puppies chew — it's quite natural. They need you to provide toys and items that they can chew safely. It is best to supply a controlled environment where you can limit the amount of damage an adolescent or puppy can do. A playpen or a puppy-proofed room with toys that deliver a treat can be very helpful, especially when you can't be watching your dog. Limit the amount of time a puppy is left alone, and educate and train to relieve boredom.",
+      "When a mature dog is destructive, it is generally due to stress or boredom. Your Bark Busters trainer will discuss the causes and offer a course of action for you. Refer to the notes on your receipt."
+    ]
+  },
+  {
+    id: "play",
+    name: "Play",
+    body: [
+      "There are many ways to play with your dog, whether to bond or simply enjoy each other's company. However, \"hand games\" (where hands are used to play with a dog) can be counterproductive and are more likely to encourage a dog to start biting and nipping. Consult with your Bark Busters trainer about the games that are best for you and your dog."
     ]
   }
 ];
 
-// Daily target shown on Today screen header
-const DAILY_TARGET = "~10 minutes total · Front door 1–2× a day";
+// Daily 6 — used by Today + Schedule.
+const DAILY_EXERCISES = EXERCISES.filter(e => e.daily);
+
 
 // ========== LESSONS ==========
 // Notes from each trainer session. Add new entries to the top.
@@ -653,7 +787,22 @@ function load() {
     const raw = localStorage.getItem(LS_KEY);
     if (!raw) return defaultState();
     const parsed = JSON.parse(raw);
-    return Object.assign(defaultState(), parsed);
+    const merged = Object.assign(defaultState(), parsed);
+    // Migration: legacy logs had {checks: {id:bool}} — now {counts: {id:number}}
+    for (const dateKey of Object.keys(merged.logs || {})) {
+      const log = merged.logs[dateKey];
+      if (log && log.checks && !log.counts) {
+        log.counts = {};
+        for (const id of Object.keys(log.checks)) {
+          if (log.checks[id]) log.counts[id] = 1;
+        }
+        delete log.checks;
+      }
+      if (!log.counts) log.counts = {};
+      if (!log.notes) log.notes = {};
+      if (!log.journal) log.journal = "";
+    }
+    return merged;
   } catch (e) { return defaultState(); }
 }
 
@@ -684,7 +833,8 @@ function weekNumber() {
   return Math.min(5, Math.ceil(dayNumber() / 7));
 }
 function getLog(dateKey) {
-  if (!state.logs[dateKey]) state.logs[dateKey] = { checks: {}, notes: {}, journal: "" };
+  if (!state.logs[dateKey]) state.logs[dateKey] = { counts: {}, notes: {}, journal: "" };
+  if (!state.logs[dateKey].counts) state.logs[dateKey].counts = {};
   return state.logs[dateKey];
 }
 function escapeHtml(s) {
@@ -703,26 +853,30 @@ function renderToday() {
   document.getElementById("todayDate").textContent = fmtDate(parseDate(todayKey()));
   document.getElementById("dayNum").textContent = dayNumber();
   document.getElementById("weekNum").textContent = weekNumber() + " of 5";
-  document.getElementById("targetPill").textContent = "🎯 " + DAILY_TARGET;
   const log = getLog(todayKey());
   const host = document.getElementById("exerciseList");
   host.innerHTML = "";
-  EXERCISES.forEach(ex => {
-    const done = !!log.checks[ex.id];
+  DAILY_EXERCISES.forEach(ex => {
+    const count = log.counts[ex.id] || 0;
+    const done = count > 0;
     const sessionCount = countSessions(ex.id);
     const row = document.createElement("div");
     row.className = "ex" + (done ? " done" : "");
     row.innerHTML = `
-      <div class="ex-head" onclick="toggleCheck('${ex.id}')" role="button" aria-label="Mark ${escapeHtml(ex.name)}">
+      <div class="ex-head" data-ex="${ex.id}" role="button" aria-label="Log a rep of ${escapeHtml(ex.name)}">
         <span class="ex-check" aria-hidden="true">✓</span>
         <div class="ex-title">
           ${escapeHtml(ex.name)}
           ${ex.cadence ? `<div class="ex-cadence">${escapeHtml(ex.cadence)}</div>` : ""}
         </div>
-        <div class="ex-counter"><b>${sessionCount}</b> ${sessionCount === 1 ? "day" : "days"}</div>
+        <div class="ex-counter">
+          ${done ? `<span class="today-count" data-ex="${ex.id}" title="Long-press to reset">${count}× today</span>` : ""}
+          <span class="all-time"><b>${sessionCount}</b> ${sessionCount === 1 ? "day" : "days"}</span>
+        </div>
       </div>
       <div class="ex-actions">
-        <button class="ex-btn" onclick="event.stopPropagation(); toggleNote('${ex.id}')">${log.notes[ex.id] ? "Edit note" : "Add note"}</button>
+        <button class="ex-btn" data-action="note" data-ex="${ex.id}">${log.notes[ex.id] ? "Edit note" : "Add note"}</button>
+        ${done ? `<button class="ex-btn reset" data-action="reset" data-ex="${ex.id}">Reset today</button>` : ""}
       </div>
       <div id="note-${ex.id}" style="display:${log.notes[ex.id] ? "block" : "none"};">
         <textarea class="ex-note" data-ex="${ex.id}" placeholder="Reps, response, what worked…">${escapeHtml(log.notes[ex.id] || "")}</textarea>
@@ -730,7 +884,42 @@ function renderToday() {
     `;
     host.appendChild(row);
   });
-  // Wire note input handlers
+  // Wire row tap → +1 (long-press on count → reset)
+  host.querySelectorAll(".ex-head").forEach(head => {
+    const exId = head.dataset.ex;
+    head.addEventListener("click", () => incrementCount(exId));
+  });
+  // Long-press on count to reset (also fires the inline button click)
+  host.querySelectorAll(".today-count").forEach(badge => {
+    let timer;
+    const start = (e) => {
+      e.stopPropagation();
+      timer = setTimeout(() => {
+        if (confirm("Reset today's count for this exercise?")) {
+          resetCount(badge.dataset.ex);
+        }
+      }, 600);
+    };
+    const cancel = () => clearTimeout(timer);
+    badge.addEventListener("mousedown", start);
+    badge.addEventListener("touchstart", start, { passive: true });
+    badge.addEventListener("mouseup", cancel);
+    badge.addEventListener("touchend", cancel);
+    badge.addEventListener("mouseleave", cancel);
+    // Block click bubbling so long-press doesn't also fire +1
+    badge.addEventListener("click", e => e.stopPropagation());
+  });
+  // Action buttons (note, reset)
+  host.querySelectorAll(".ex-btn").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.stopPropagation();
+      const action = btn.dataset.action;
+      const exId = btn.dataset.ex;
+      if (action === "note") toggleNote(exId);
+      else if (action === "reset") resetCount(exId);
+    });
+  });
+  // Note text → save on input
   host.querySelectorAll(".ex-note").forEach(t => {
     t.addEventListener("input", e => {
       const exId = e.target.dataset.ex;
@@ -739,27 +928,38 @@ function renderToday() {
       save();
     });
   });
-  // Wire today's journal
+  // Today's journal
   const j = document.getElementById("todayJournal");
   j.value = log.journal || "";
   j.oninput = () => { log.journal = j.value; save(); };
 }
-function toggleCheck(exId) {
+
+function incrementCount(exId) {
   const log = getLog(todayKey());
-  log.checks[exId] = !log.checks[exId];
+  log.counts[exId] = (log.counts[exId] || 0) + 1;
   save(); renderToday();
-  toast(log.checks[exId] ? "Logged ✓" : "Unchecked");
+  toast(`Logged · ${log.counts[exId]}× today`);
 }
+
+function resetCount(exId) {
+  const log = getLog(todayKey());
+  log.counts[exId] = 0;
+  save(); renderToday();
+  toast("Reset");
+}
+
 function toggleNote(exId) {
   const el = document.getElementById("note-" + exId);
   const open = el.style.display !== "none";
   el.style.display = open ? "none" : "block";
   if (!open) el.querySelector("textarea").focus();
 }
+
 function countSessions(exId) {
   let n = 0;
   for (const k of Object.keys(state.logs)) {
-    if (state.logs[k].checks?.[exId]) n++;
+    const c = state.logs[k].counts?.[exId];
+    if (c && c > 0) n++;
   }
   return n;
 }
@@ -779,8 +979,8 @@ function renderSchedule() {
     for (let d = 1; d <= 7; d++) html += `<th class='col-day'>${d}</th>`;
   }
   html += "</tr>";
-  // One row per exercise
-  EXERCISES.forEach(ex => {
+  // One row per daily exercise
+  DAILY_EXERCISES.forEach(ex => {
     html += `<tr><th class='row-label'>${escapeHtml(ex.name)}</th>`;
     for (let w = 0; w < 5; w++) {
       for (let d = 0; d < 7; d++) {
@@ -788,7 +988,7 @@ function renderSchedule() {
         const date = new Date(start);
         date.setDate(date.getDate() + idx);
         const k = date.getFullYear() + "-" + String(date.getMonth()+1).padStart(2,"0") + "-" + String(date.getDate()).padStart(2,"0");
-        const done = !!state.logs[k]?.checks?.[ex.id];
+        const done = (state.logs[k]?.counts?.[ex.id] || 0) > 0;
         const isToday = k === today;
         html += `<td class='cell ${done ? "done" : ""} ${isToday ? "today" : ""}'>${done ? "✓" : ""}</td>`;
       }
@@ -802,7 +1002,7 @@ function renderSchedule() {
 function renderReference() {
   const host = document.getElementById("referenceList");
   host.innerHTML = "";
-  EXERCISES.forEach(ex => {
+  const renderCard = (ex) => {
     const det = document.createElement("details");
     det.className = "ref";
     const lead = ex.body[0];
@@ -815,7 +1015,21 @@ function renderReference() {
       </div>
     `;
     host.appendChild(det);
-  });
+  };
+
+  // Daily 6 first
+  const dailyHeader = document.createElement("div");
+  dailyHeader.className = "ref-divider";
+  dailyHeader.textContent = "Daily Exercises for Alphi";
+  host.appendChild(dailyHeader);
+  EXERCISES.filter(e => e.daily).forEach(renderCard);
+
+  // Then everything else from the handout
+  const refHeader = document.createElement("div");
+  refHeader.className = "ref-divider";
+  refHeader.textContent = "Other Exercises (Reference)";
+  host.appendChild(refHeader);
+  EXERCISES.filter(e => !e.daily).forEach(renderCard);
 }
 
 // ========== LESSONS VIEW ==========
