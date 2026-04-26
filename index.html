@@ -168,6 +168,58 @@
   details.ref .ref-body p { margin: 0 0 10px; }
   details.ref .ref-body .lead { color: var(--gold); font-weight: 600; }
 
+  /* ===== Lessons ===== */
+  .lesson-meta {
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 2px;
+  }
+  .lesson-section { margin-top: 18px; }
+  .lesson-section:first-child { margin-top: 6px; }
+  .lesson-section h4 {
+    margin: 0 0 8px; font-size: 14px; font-weight: 700;
+    color: var(--accent); letter-spacing: 0.2px;
+  }
+  table.lesson-table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    background: var(--panel-2); border-radius: 8px; overflow: hidden;
+    font-size: 13px;
+  }
+  table.lesson-table th, table.lesson-table td {
+    padding: 8px 10px; text-align: left; vertical-align: top;
+    border-bottom: 1px solid var(--line); line-height: 1.5;
+  }
+  table.lesson-table th {
+    color: var(--muted); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; text-transform: uppercase;
+    background: rgba(255,255,255,0.02);
+  }
+  table.lesson-table tr:last-child td { border-bottom: none; }
+  table.lesson-table td.k { font-weight: 700; color: var(--text); white-space: nowrap; padding-right: 14px; }
+  .lesson-list { padding-left: 20px; margin: 8px 0; }
+  .lesson-list li { margin-bottom: 6px; line-height: 1.55; font-size: 13.5px; }
+  .lesson-takeaway {
+    background: rgba(245,199,104,0.07);
+    border-left: 3px solid var(--gold);
+    padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0;
+    font-size: 13.5px; line-height: 1.5;
+  }
+  .lesson-takeaway b { color: var(--gold); }
+
+  /* Stack lesson tables on phones (key column on top, value below) */
+  @media (max-width: 640px) {
+    table.lesson-table thead { display: none; }
+    table.lesson-table, table.lesson-table tbody, table.lesson-table tr, table.lesson-table td {
+      display: block; width: 100%;
+    }
+    table.lesson-table tr { padding: 8px 0; border-bottom: 1px solid var(--line); }
+    table.lesson-table tr:last-child { border-bottom: none; }
+    table.lesson-table td { padding: 4px 12px; border: none; }
+    table.lesson-table td.k {
+      color: var(--accent); font-size: 11px; letter-spacing: 0.6px;
+      text-transform: uppercase; padding-bottom: 2px; padding-top: 6px;
+    }
+  }
+
   /* ===== Schedule grid ===== */
   .grid-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   table.schedule {
@@ -282,6 +334,7 @@
     <button class="active" data-tab="today">Today</button>
     <button data-tab="schedule">Schedule</button>
     <button data-tab="reference">How To</button>
+    <button data-tab="lessons">Lessons</button>
     <button data-tab="journal">Journal</button>
     <button data-tab="settings">Settings</button>
   </nav>
@@ -318,6 +371,15 @@
       <div class="sub">Tap any exercise to expand. Source: Bark Busters Training Exercises handout.</div>
     </div>
     <div id="referenceList"></div>
+  </section>
+
+  <!-- ===== LESSONS ===== -->
+  <section class="view" id="view-lessons">
+    <div class="card">
+      <h2>Lessons</h2>
+      <div class="sub">Notes from each session with the trainer. Tap a session to expand.</div>
+    </div>
+    <div id="lessonsList"></div>
   </section>
 
   <!-- ===== JOURNAL ===== -->
@@ -444,6 +506,128 @@ const EXERCISES = [
     body: [
       "Jumping is a habit many dog owners wish they had addressed when their dog was a puppy. It is most effective to address this behavior BEFORE your dog actually jumps. You may need to use training aids with this exercise.",
       "As your dog tenses to jump, stand tall and \"BAH\". Give immediate praise when your dog has their four paws on the floor. It is important not to overreact and push your dog or step back — these actions only serve to keep your dog repeating the behavior."
+    ]
+  }
+];
+
+// ========== LESSONS ==========
+// Notes from each trainer session. Add new entries to the top.
+const LESSONS = [
+  {
+    date: "2026-04-25",
+    title: "Session 1 — Communication & Boundaries",
+    sections: [
+      {
+        heading: "1. Understanding Dog Communication and Learning",
+        kind: "table",
+        rows: [
+          ["Dog Communication Forms", "1. Language (barks, whines, growls)<br>2. Snaps (warning bites without contact)<br>3. Fighting (ignored in training)"],
+          ["Learning Style", "Dogs are <b>associative binary learners</b> — learn by action, understanding clear right/wrong signals instantly"],
+          ["Escalation Pattern", "Dogs escalate communication (body language → growl → snap) to warn before aggression"],
+          ["Human vs Dog Communication", "Unlike dogs, humans often lack an escalation pattern, making clear, binary communication essential"]
+        ]
+      },
+      {
+        heading: "2. Correcting Dog Behavior — Principles & Techniques",
+        kind: "table",
+        rows: [
+          ["Clarity in Commands", "Corrections must be <b>black and white</b> — no ambiguity (like a light switch on/off)"],
+          ["Body Language", "Use <b>tall posture</b> and confident body language when correcting; avoid submissive or low posture to prevent confusion"],
+          ["Verbal Tone", "Tone matters more than words:<br>• Good behavior: <b>high-pitched, energetic</b><br>• Correction: <b>deep, guttural</b> (e.g. \"Hey\")"],
+          ["Correction Levels", "1. Tall body, deep tone<br>2. Add firm hand clap<br>3. Spray bottle + deep tone (mimics snap)"],
+          ["Consistency", "Don't repeat the same correction level multiple times before escalating — escalate quickly and firmly"],
+          ["Timing", "75% timing, 25% correction intensity — correct at <i>intent</i>, not after the full action"]
+        ]
+      },
+      {
+        heading: "3. Personal Space and Boundary Setting",
+        kind: "table",
+        rows: [
+          ["Personal Space", "Maintain a <b>\"hula hoop\"</b> space around you (1-2 feet); correct any uninvited intrusion"],
+          ["Invitations vs Intrusions", "Let dog approach on <b>your</b> terms, not theirs"],
+          ["Active Influence Behaviors", "Jumping, pawing, nudging indicate attempts at control; correct even minor forms to prevent bigger problems"],
+          ["Claiming Space Exercise", "Use gentle but firm corrections (e.g., nose taps, \"hey\" corrections) to show boundaries"],
+          ["Leadership and Respect", "Dogs with control feel \"bossy\"; respect arises when owners consistently enforce boundaries"]
+        ]
+      },
+      {
+        heading: "4. Managing Behaviors — Barking, Jumping, Door Greetings",
+        kind: "table",
+        rows: [
+          ["Jumping", "Correct early with body language and tone; escalate if ignored"],
+          ["Barking at Door", "Recreate scenarios: knock, then correct immediately at first bark; escalate corrections if barking persists"],
+          ["Front Door Routine", "Dog waits at a distance calmly until invited; gradually reduce excitability using systematic correction levels"],
+          ["Greeting Visitors", "Block access if dog pushes space; call dog away and reward calm behavior"],
+          ["Consistent Correction", "Correct catapulting up the threshold (door) repeatedly, resetting the boundary"]
+        ]
+      },
+      {
+        heading: "5. Reinforcement of Positive Behavior",
+        kind: "table",
+        rows: [
+          ["Calm, Low Energy", "Reinforce with affectionate tone and petting (\"good boy / girl\")"],
+          ["Wait for Permission", "Reward recalls and approaching <i>only</i> when on owner's call"],
+          ["Rule-based Learning", "Focus on <b>rules and boundaries</b>, not commands requiring repeated cues (e.g., \"don't cross this line\")"]
+        ]
+      },
+      {
+        heading: "6. Food, Chewing, and Energy Management",
+        kind: "table",
+        rows: [
+          ["Chewing", "Often linked to triggers like hunger or thirst. Proactively limit accessible items to specific toys and times"],
+          ["Food and Energy", "Homemade food (lower carbs) can reduce hyperactivity compared to kibble"],
+          ["Hydration", "Keep water bowls filled to reduce stress-driven chewing"]
+        ]
+      },
+      {
+        heading: "7. Children & High-Adrenaline Situations",
+        kind: "table",
+        rows: [
+          ["Remove or confine dog during high activity", "E.g., many kids running around"],
+          ["Calm, confident human energy for corrections", "Avoid matching high-adrenaline energy"],
+          ["Gradually introduce dog to children", "Start in low-stimulation settings first"],
+          ["Monitor dog's signals", "Watch for growling or snapping; remove child or dog early to prevent escalation"]
+        ]
+      },
+      {
+        heading: "8. Long-term Training & Expectations",
+        kind: "table",
+        rows: [
+          ["Habit Formation", "Typically ~3 weeks for new behaviors or boundaries to become established"],
+          ["Persistence", "Consistent daily corrections required; expect test periods as the dog pushes boundaries"],
+          ["Advanced issues", "Older dogs and long-standing habits can be retrained successfully with the right methods"],
+          ["Professional Help", "Call trainer if specific behaviors (jumping, barking) persist beyond the training period"]
+        ]
+      },
+      {
+        heading: "9. Trainer's Personal Experience & Anecdotes",
+        kind: "list",
+        items: [
+          "Importance of communication clarity and consistent boundary enforcement",
+          "Negative effects of treat-based \"bark then treat\" methods (rewards barking)",
+          "Shock collars often misused; correct use is for long-distance recall in hunting dogs",
+          "Trainer's dog stays calm, non-jumpy, and quiet for years with regular reinforcement and boundaries",
+          "Even very old dogs (17 yrs) can respond positively to corrected, consistent training"
+        ]
+      },
+      {
+        heading: "10. Practical Exercises Suggested",
+        kind: "table",
+        rows: [
+          ["Claim Personal Space", "Correct any dog that enters personal space without invitation, escalating correction levels"],
+          ["Front Door Practice", "Recreate guest arrival with knocking; corrective cues on first bark, escalating as needed"],
+          ["Bark Management", "Use claps and voice commands to interrupt barking from a distance, then move dog away from the trigger"],
+          ["Calmness Rewarding", "Reinforce calm behaviors consistently with positive tone and affection"],
+          ["Monitor and Adjust", "Take notes on Alphi's specific \"tells\" and react promptly to catch behaviors early"]
+        ]
+      }
+    ],
+    takeaways: [
+      "Dogs require <b>clear, consistent, binary communication</b> paired with confident body language and tone.",
+      "<b>Escalate corrections swiftly</b> — avoid repeated ineffective cues, which invite the dog to test boundaries.",
+      "<b>Claiming personal space</b> and enforcing boundaries consistently builds leadership and reduces problem behaviors.",
+      "<b>Reinforce calm behavior</b> as much as you correct wrong behavior to develop a balanced, respectful relationship.",
+      "<b>Practice scenarios proactively</b> (front door, barking, jumping) to build habits and reduce real-life stress for both dog and humans."
     ]
   }
 ];
@@ -622,6 +806,47 @@ function renderReference() {
   });
 }
 
+// ========== LESSONS VIEW ==========
+function renderLessons() {
+  const host = document.getElementById("lessonsList");
+  host.innerHTML = "";
+  // Most recent first
+  const sorted = LESSONS.slice().sort((a, b) => b.date.localeCompare(a.date));
+  sorted.forEach((lesson, idx) => {
+    const det = document.createElement("details");
+    det.className = "ref";
+    if (idx === 0) det.open = true; // most recent expanded by default
+    const dateStr = fmtDate(parseDate(lesson.date));
+    let inner = `<div class="lesson-meta">${escapeHtml(dateStr)}</div>`;
+    lesson.sections.forEach(sec => {
+      inner += `<div class="lesson-section"><h4>${escapeHtml(sec.heading)}</h4>`;
+      if (sec.kind === "table") {
+        inner += `<table class="lesson-table"><tbody>`;
+        sec.rows.forEach(r => {
+          // r[0] = key, r[1] = value (HTML-allowed for inline formatting from data we control)
+          inner += `<tr><td class="k">${escapeHtml(r[0])}</td><td>${r[1]}</td></tr>`;
+        });
+        inner += `</tbody></table>`;
+      } else if (sec.kind === "list") {
+        inner += `<ul class="lesson-list">`;
+        sec.items.forEach(item => { inner += `<li>${escapeHtml(item)}</li>`; });
+        inner += `</ul>`;
+      }
+      inner += `</div>`;
+    });
+    if (lesson.takeaways && lesson.takeaways.length) {
+      inner += `<div class="lesson-section"><h4>Key Takeaways</h4>`;
+      lesson.takeaways.forEach(t => {
+        // Allow inline <b> and <i> from controlled data
+        inner += `<div class="lesson-takeaway">${t}</div>`;
+      });
+      inner += `</div>`;
+    }
+    det.innerHTML = `<summary>${escapeHtml(lesson.title)}</summary><div class="ref-body">${inner}</div>`;
+    host.appendChild(det);
+  });
+}
+
 // ========== JOURNAL VIEW ==========
 function renderJournal() {
   const host = document.getElementById("journalList");
@@ -690,6 +915,7 @@ function setupTabs() {
       // Re-render the view in case data changed
       if (b.dataset.tab === "schedule") renderSchedule();
       if (b.dataset.tab === "reference") renderReference();
+      if (b.dataset.tab === "lessons") renderLessons();
       if (b.dataset.tab === "journal") renderJournal();
       if (b.dataset.tab === "today") renderToday();
       if (b.dataset.tab === "settings") renderSettings();
@@ -701,6 +927,7 @@ function renderAll() {
   renderToday();
   renderSchedule();
   renderReference();
+  renderLessons();
   renderJournal();
   renderSettings();
 }
