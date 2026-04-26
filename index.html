@@ -3,33 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0a1f3d">
+<meta name="theme-color" content="#2d7a52">
 <title>Alphi's Training</title>
 <style>
   :root {
-    --bg: #0a0f1a;
-    --panel: #131a28;
-    --panel-2: #0f1521;
-    --line: rgba(255,255,255,0.07);
-    --text: #e8eef7;
-    --muted: #8597b3;
-    --dim: rgba(255,255,255,0.35);
-    --gold: #f5c768;
-    --accent: #6dd9a4;
-    --accent-soft: rgba(109,217,164,0.14);
-    --warn: #f1a364;
-    --done: #34d399;
+    --bg: #f8f5e6;          /* Bark Busters cream paper */
+    --panel: #ffffff;
+    --panel-2: #fbf9ef;
+    --line: rgba(45,99,72,0.16);
+    --text: #1f3d2c;        /* deep program green */
+    --muted: #6b7d6f;
+    --dim: rgba(31,61,44,0.4);
+    --gold: #d99a1a;        /* Bark Busters logo orange-gold */
+    --accent: #2d7a52;      /* Bark Busters green */
+    --accent-strong: #1f5a3b;
+    --accent-soft: rgba(45,122,82,0.10);
+    --warn: #c4521a;
+    --done: #2d7a52;
+    --shadow: 0 1px 0 rgba(45,99,72,0.06), 0 6px 18px rgba(45,99,72,0.06);
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body, #root { margin: 0; min-height: 100%; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
     background:
-      radial-gradient(ellipse at 20% -10%, rgba(109,217,164,0.08), transparent 60%),
-      radial-gradient(ellipse at 90% 0%, rgba(245,199,104,0.06), transparent 50%),
+      linear-gradient(180deg, #fbf8ec 0%, var(--bg) 240px),
       var(--bg);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
+  }
+  /* Bark-Busters style green footer band — sits at the very bottom */
+  body::after {
+    content: "";
+    position: fixed; left: 0; right: 0; bottom: 0;
+    height: 6px; background: var(--accent);
+    z-index: 50; pointer-events: none;
   }
 
   .container { max-width: 980px; margin: 0 auto; padding: 18px 18px 90px; }
@@ -40,18 +48,20 @@
     margin-bottom: 6px;
   }
   .brand {
-    font-family: "Georgia", serif; font-size: 28px; font-weight: 700;
-    letter-spacing: -0.5px;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 30px; font-weight: 700;
+    letter-spacing: -0.5px; color: var(--accent);
+    text-transform: uppercase;
   }
   .brand .accent { color: var(--gold); }
   .day-counter {
-    font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
     color: var(--muted);
   }
-  .day-counter b { color: var(--accent); font-weight: 700; }
+  .day-counter b { color: var(--accent); font-weight: 800; }
   .subtitle {
     color: var(--muted); font-size: 13px;
-    margin-bottom: 18px;
+    margin-bottom: 18px; letter-spacing: 0.3px;
   }
 
   /* ===== Tabs ===== */
@@ -60,18 +70,19 @@
     background: var(--panel); border: 1px solid var(--line);
     border-radius: 12px; padding: 4px; margin: 10px 0 18px;
     overflow-x: auto; -webkit-overflow-scrolling: touch;
+    box-shadow: var(--shadow);
   }
   nav.tabs button {
     background: transparent; border: none; color: var(--muted);
     padding: 9px 14px; border-radius: 8px; font-size: 13px;
-    font-weight: 600; cursor: pointer; white-space: nowrap;
+    font-weight: 700; cursor: pointer; white-space: nowrap;
     font-family: inherit; letter-spacing: 0.3px;
     transition: all 0.15s ease;
   }
-  nav.tabs button:hover { color: var(--text); }
+  nav.tabs button:hover { color: var(--accent); }
   nav.tabs button.active {
-    background: var(--accent); color: #0a1f1a;
-    box-shadow: 0 4px 12px rgba(109,217,164,0.2);
+    background: var(--accent); color: #ffffff;
+    box-shadow: 0 4px 10px rgba(45,122,82,0.25);
   }
 
   /* ===== Card ===== */
@@ -79,13 +90,15 @@
     background: var(--panel); border: 1px solid var(--line);
     border-radius: 14px; padding: 16px;
     margin-bottom: 12px;
+    box-shadow: var(--shadow);
   }
   .card h2 {
     font-size: 18px; margin: 0 0 4px; letter-spacing: -0.2px;
+    color: var(--accent); font-weight: 800;
   }
   .card h3 {
     font-size: 15px; font-weight: 700; margin: 0 0 4px;
-    color: var(--text);
+    color: var(--accent);
   }
   .card .sub {
     font-size: 12px; color: var(--muted); margin-bottom: 10px;
@@ -96,10 +109,11 @@
     background: var(--panel); border: 1px solid var(--line);
     border-radius: 14px; padding: 14px; margin-bottom: 10px;
     transition: border-color 0.15s, background 0.15s;
+    box-shadow: var(--shadow);
   }
   .ex.done {
-    border-color: rgba(52,211,153,0.4);
-    background: linear-gradient(180deg, rgba(52,211,153,0.06), var(--panel));
+    border-color: var(--accent);
+    background: linear-gradient(180deg, var(--accent-soft), var(--panel));
   }
   .ex-head {
     display: flex; align-items: flex-start; gap: 12px;
@@ -113,18 +127,18 @@
     transition: all 0.15s;
   }
   .ex.done .ex-check {
-    background: var(--accent); border-color: var(--accent); color: #0a1f1a;
+    background: var(--accent); border-color: var(--accent); color: #ffffff;
   }
   .ex-title {
-    flex: 1; font-weight: 700; font-size: 15px;
-    line-height: 1.25; padding-top: 2px;
+    flex: 1; font-weight: 800; font-size: 15px;
+    line-height: 1.25; padding-top: 2px; color: var(--accent);
   }
-  .ex.done .ex-title { color: var(--muted); }
+  .ex.done .ex-title { color: var(--accent-strong); }
   .ex-counter {
     font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase;
     color: var(--muted); flex-shrink: 0; padding-top: 3px;
   }
-  .ex-counter b { color: var(--accent); font-weight: 700; }
+  .ex-counter b { color: var(--accent); font-weight: 800; }
   .ex-actions {
     display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;
   }
@@ -134,7 +148,7 @@
     padding: 5px 12px; font-size: 12px; font-weight: 600;
     cursor: pointer; font-family: inherit;
   }
-  .ex-btn:hover { color: var(--text); border-color: var(--accent); }
+  .ex-btn:hover { color: var(--accent); border-color: var(--accent); }
   .ex-note {
     margin-top: 8px;
     background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px;
@@ -142,17 +156,18 @@
     width: 100%; resize: vertical; min-height: 50px;
     outline: none;
   }
-  .ex-note:focus { border-color: var(--accent); }
+  .ex-note:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 
   /* ===== Reference ===== */
   details.ref {
     background: var(--panel); border: 1px solid var(--line);
     border-radius: 14px; margin-bottom: 8px; padding: 0;
+    box-shadow: var(--shadow);
   }
-  details.ref[open] { border-color: rgba(109,217,164,0.3); }
+  details.ref[open] { border-color: var(--accent); }
   details.ref summary {
-    cursor: pointer; padding: 14px 16px; font-weight: 700; font-size: 15px;
-    list-style: none; outline: none;
+    cursor: pointer; padding: 14px 16px; font-weight: 800; font-size: 15px;
+    list-style: none; outline: none; color: var(--accent);
     display: flex; align-items: center; justify-content: space-between;
   }
   details.ref summary::-webkit-details-marker { display: none; }
@@ -170,55 +185,56 @@
 
   .target-pill {
     display: inline-block;
-    margin-top: 8px;
-    background: rgba(245,199,104,0.1);
-    border: 1px solid rgba(245,199,104,0.35);
-    color: var(--gold);
-    padding: 5px 12px; border-radius: 999px;
-    font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
+    margin-top: 10px;
+    background: var(--accent);
+    color: #ffffff;
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.4px;
+    box-shadow: 0 4px 10px rgba(45,122,82,0.20);
   }
   .ex-cadence {
     font-size: 11px; letter-spacing: 0.4px;
-    color: var(--gold); opacity: 0.85;
-    margin-top: 2px; font-weight: 500;
+    color: var(--gold); margin-top: 2px;
+    font-weight: 700; text-transform: uppercase;
   }
 
   /* ===== Lessons ===== */
   .lesson-meta {
     font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 2px;
+    color: var(--gold); margin-bottom: 2px; font-weight: 700;
   }
   .lesson-section { margin-top: 18px; }
   .lesson-section:first-child { margin-top: 6px; }
   .lesson-section h4 {
-    margin: 0 0 8px; font-size: 14px; font-weight: 700;
-    color: var(--accent); letter-spacing: 0.2px;
+    margin: 0 0 8px; font-size: 14px; font-weight: 800;
+    color: var(--accent); letter-spacing: 0.3px;
   }
   table.lesson-table {
     width: 100%; border-collapse: separate; border-spacing: 0;
     background: var(--panel-2); border-radius: 8px; overflow: hidden;
     font-size: 13px;
+    border: 1px solid var(--line);
   }
   table.lesson-table th, table.lesson-table td {
     padding: 8px 10px; text-align: left; vertical-align: top;
     border-bottom: 1px solid var(--line); line-height: 1.5;
   }
   table.lesson-table th {
-    color: var(--muted); font-size: 11px; font-weight: 700;
+    color: var(--accent); font-size: 11px; font-weight: 800;
     letter-spacing: 0.6px; text-transform: uppercase;
-    background: rgba(255,255,255,0.02);
+    background: var(--accent-soft);
   }
   table.lesson-table tr:last-child td { border-bottom: none; }
-  table.lesson-table td.k { font-weight: 700; color: var(--text); white-space: nowrap; padding-right: 14px; }
+  table.lesson-table td.k { font-weight: 700; color: var(--accent); white-space: nowrap; padding-right: 14px; }
   .lesson-list { padding-left: 20px; margin: 8px 0; }
   .lesson-list li { margin-bottom: 6px; line-height: 1.55; font-size: 13.5px; }
   .lesson-takeaway {
-    background: rgba(245,199,104,0.07);
-    border-left: 3px solid var(--gold);
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
     padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0;
     font-size: 13.5px; line-height: 1.5;
   }
-  .lesson-takeaway b { color: var(--gold); }
+  .lesson-takeaway b { color: var(--accent-strong); }
 
   /* Stack lesson tables on phones (key column on top, value below) */
   @media (max-width: 640px) {
@@ -248,20 +264,20 @@
   }
   table.schedule th.row-label {
     text-align: left; min-width: 150px; padding-left: 12px;
-    background: transparent; color: var(--text); font-weight: 600;
+    background: transparent; color: var(--accent); font-weight: 700;
   }
   table.schedule td.cell.done {
-    background: var(--accent); color: #0a1f1a; font-weight: 800;
+    background: var(--accent); color: #ffffff; font-weight: 800;
   }
   table.schedule td.cell.today {
-    box-shadow: inset 0 0 0 1px var(--gold);
+    box-shadow: inset 0 0 0 2px var(--gold);
   }
   table.schedule th.col-week {
-    background: transparent; color: var(--gold); letter-spacing: 1.5px;
-    font-size: 10px; padding-bottom: 0;
+    background: transparent; color: var(--accent); letter-spacing: 1.5px;
+    font-size: 10px; padding-bottom: 0; font-weight: 800;
   }
   table.schedule th.col-day {
-    background: transparent; color: var(--muted); font-weight: 500;
+    background: transparent; color: var(--muted); font-weight: 600;
     font-size: 11px;
   }
 
@@ -272,15 +288,16 @@
     font-family: inherit; font-size: 14px; min-height: 110px; resize: vertical;
     outline: none;
   }
-  textarea.journal:focus { border-color: var(--accent); }
+  textarea.journal:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
   .journal-list { margin-top: 14px; }
   .journal-day {
     background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
     padding: 12px 14px; margin-bottom: 8px;
+    box-shadow: var(--shadow);
   }
   .journal-day .date {
     font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 4px;
+    color: var(--accent); margin-bottom: 4px; font-weight: 800;
   }
   .journal-day .body { font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
 
@@ -289,32 +306,33 @@
     display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
     margin-top: 12px;
   }
-  .settings-row label { font-size: 12px; color: var(--muted); }
+  .settings-row label { font-size: 12px; color: var(--muted); font-weight: 600; }
   .settings-row input[type="date"] {
     background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px;
     padding: 6px 8px; color: var(--text); font-family: inherit; font-size: 13px;
-    color-scheme: dark;
+    color-scheme: light;
   }
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
   .btn {
-    background: var(--accent-soft); border: 1px solid rgba(109,217,164,0.4);
-    color: var(--accent); border-radius: 8px;
-    padding: 8px 14px; font-size: 13px; font-weight: 600;
-    cursor: pointer; font-family: inherit;
+    background: var(--accent); border: 1px solid var(--accent-strong);
+    color: #ffffff; border-radius: 8px;
+    padding: 8px 14px; font-size: 13px; font-weight: 700;
+    cursor: pointer; font-family: inherit; letter-spacing: 0.3px;
+    box-shadow: 0 2px 6px rgba(45,122,82,0.18);
   }
-  .btn:hover { background: rgba(109,217,164,0.22); }
+  .btn:hover { background: var(--accent-strong); }
   .btn.warn {
-    background: rgba(241,163,100,0.1); border-color: rgba(241,163,100,0.4);
-    color: var(--warn);
+    background: #ffffff; border-color: rgba(196,82,26,0.4);
+    color: var(--warn); box-shadow: none;
   }
-  .btn.warn:hover { background: rgba(241,163,100,0.18); }
+  .btn.warn:hover { background: rgba(196,82,26,0.06); }
 
   /* ===== Toast ===== */
   #toast {
-    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(80px);
-    background: var(--panel); color: var(--text); border: 1px solid var(--line);
-    border-radius: 999px; padding: 9px 18px; font-size: 13px; font-weight: 600;
-    box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--accent); color: #ffffff; border: none;
+    border-radius: 999px; padding: 10px 20px; font-size: 13px; font-weight: 700;
+    box-shadow: 0 8px 22px rgba(45,122,82,0.35);
     transition: transform 0.25s ease;
     z-index: 1000;
   }
