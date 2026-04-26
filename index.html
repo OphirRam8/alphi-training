@@ -117,6 +117,9 @@
   }
   .ex-head {
     display: flex; align-items: flex-start; gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
   }
   .ex-check {
     flex-shrink: 0; width: 26px; height: 26px;
@@ -710,8 +713,8 @@ function renderToday() {
     const row = document.createElement("div");
     row.className = "ex" + (done ? " done" : "");
     row.innerHTML = `
-      <div class="ex-head">
-        <button class="ex-check" onclick="toggleCheck('${ex.id}')" aria-label="Mark ${escapeHtml(ex.name)}">✓</button>
+      <div class="ex-head" onclick="toggleCheck('${ex.id}')" role="button" aria-label="Mark ${escapeHtml(ex.name)}">
+        <span class="ex-check" aria-hidden="true">✓</span>
         <div class="ex-title">
           ${escapeHtml(ex.name)}
           ${ex.cadence ? `<div class="ex-cadence">${escapeHtml(ex.cadence)}</div>` : ""}
@@ -719,7 +722,7 @@ function renderToday() {
         <div class="ex-counter"><b>${sessionCount}</b> ${sessionCount === 1 ? "day" : "days"}</div>
       </div>
       <div class="ex-actions">
-        <button class="ex-btn" onclick="toggleNote('${ex.id}')">${log.notes[ex.id] ? "Edit note" : "Add note"}</button>
+        <button class="ex-btn" onclick="event.stopPropagation(); toggleNote('${ex.id}')">${log.notes[ex.id] ? "Edit note" : "Add note"}</button>
       </div>
       <div id="note-${ex.id}" style="display:${log.notes[ex.id] ? "block" : "none"};">
         <textarea class="ex-note" data-ex="${ex.id}" placeholder="Reps, response, what worked…">${escapeHtml(log.notes[ex.id] || "")}</textarea>
