@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a1f3d">
+<title>Alphi's Training</title>
+<style>
+  :root {
+    --bg: #0a0f1a;
+    --panel: #131a28;
+    --panel-2: #0f1521;
+    --line: rgba(255,255,255,0.07);
+    --text: #e8eef7;
+    --muted: #8597b3;
+    --dim: rgba(255,255,255,0.35);
+    --gold: #f5c768;
+    --accent: #6dd9a4;
+    --accent-soft: rgba(109,217,164,0.14);
+    --warn: #f1a364;
+    --done: #34d399;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body, #root { margin: 0; min-height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(109,217,164,0.08), transparent 60%),
+      radial-gradient(ellipse at 90% 0%, rgba(245,199,104,0.06), transparent 50%),
+      var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 18px 18px 90px; }
+
+  /* ===== Header ===== */
+  header {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+    margin-bottom: 6px;
+  }
+  .brand {
+    font-family: "Georgia", serif; font-size: 28px; font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .brand .accent { color: var(--gold); }
+  .day-counter {
+    font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .day-counter b { color: var(--accent); font-weight: 700; }
+  .subtitle {
+    color: var(--muted); font-size: 13px;
+    margin-bottom: 18px;
+  }
+
+  /* ===== Tabs ===== */
+  nav.tabs {
+    display: flex; gap: 4px;
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 4px; margin: 10px 0 18px;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+  }
+  nav.tabs button {
+    background: transparent; border: none; color: var(--muted);
+    padding: 9px 14px; border-radius: 8px; font-size: 13px;
+    font-weight: 600; cursor: pointer; white-space: nowrap;
+    font-family: inherit; letter-spacing: 0.3px;
+    transition: all 0.15s ease;
+  }
+  nav.tabs button:hover { color: var(--text); }
+  nav.tabs button.active {
+    background: var(--accent); color: #0a1f1a;
+    box-shadow: 0 4px 12px rgba(109,217,164,0.2);
+  }
+
+  /* ===== Card ===== */
+  .card {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px;
+    margin-bottom: 12px;
+  }
+  .card h2 {
+    font-size: 18px; margin: 0 0 4px; letter-spacing: -0.2px;
+  }
+  .card h3 {
+    font-size: 15px; font-weight: 700; margin: 0 0 4px;
+    color: var(--text);
+  }
+  .card .sub {
+    font-size: 12px; color: var(--muted); margin-bottom: 10px;
+  }
+
+  /* ===== Today / exercise card ===== */
+  .ex {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; padding: 14px; margin-bottom: 10px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .ex.done {
+    border-color: rgba(52,211,153,0.4);
+    background: linear-gradient(180deg, rgba(52,211,153,0.06), var(--panel));
+  }
+  .ex-head {
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .ex-check {
+    flex-shrink: 0; width: 26px; height: 26px;
+    border: 2px solid var(--line); border-radius: 6px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: transparent; font-weight: 900; font-size: 16px;
+    background: transparent; padding: 0;
+    transition: all 0.15s;
+  }
+  .ex.done .ex-check {
+    background: var(--accent); border-color: var(--accent); color: #0a1f1a;
+  }
+  .ex-title {
+    flex: 1; font-weight: 700; font-size: 15px;
+    line-height: 1.25; padding-top: 2px;
+  }
+  .ex.done .ex-title { color: var(--muted); }
+  .ex-counter {
+    font-size: 11px; letter-spacing: 0.6px; text-transform: uppercase;
+    color: var(--muted); flex-shrink: 0; padding-top: 3px;
+  }
+  .ex-counter b { color: var(--accent); font-weight: 700; }
+  .ex-actions {
+    display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;
+  }
+  .ex-btn {
+    background: transparent; border: 1px solid var(--line);
+    color: var(--muted); border-radius: 8px;
+    padding: 5px 12px; font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+  .ex-btn:hover { color: var(--text); border-color: var(--accent); }
+  .ex-note {
+    margin-top: 8px;
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 8px 10px; color: var(--text); font-family: inherit; font-size: 13px;
+    width: 100%; resize: vertical; min-height: 50px;
+    outline: none;
+  }
+  .ex-note:focus { border-color: var(--accent); }
+
+  /* ===== Reference ===== */
+  details.ref {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 14px; margin-bottom: 8px; padding: 0;
+  }
+  details.ref[open] { border-color: rgba(109,217,164,0.3); }
+  details.ref summary {
+    cursor: pointer; padding: 14px 16px; font-weight: 700; font-size: 15px;
+    list-style: none; outline: none;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  details.ref summary::-webkit-details-marker { display: none; }
+  details.ref summary::after {
+    content: "+"; color: var(--accent); font-size: 22px; line-height: 1;
+    transition: transform 0.15s;
+  }
+  details.ref[open] summary::after { content: "−"; }
+  details.ref .ref-body {
+    padding: 0 16px 16px;
+    color: var(--text); font-size: 14px; line-height: 1.55;
+  }
+  details.ref .ref-body p { margin: 0 0 10px; }
+  details.ref .ref-body .lead { color: var(--gold); font-weight: 600; }
+
+  /* ===== Schedule grid ===== */
+  .grid-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table.schedule {
+    border-collapse: separate; border-spacing: 2px;
+    margin: 0 auto; font-size: 12px;
+    min-width: 100%;
+  }
+  table.schedule th, table.schedule td {
+    padding: 6px 8px; text-align: center; min-width: 32px;
+    background: var(--panel-2); border-radius: 4px; color: var(--muted);
+  }
+  table.schedule th.row-label {
+    text-align: left; min-width: 150px; padding-left: 12px;
+    background: transparent; color: var(--text); font-weight: 600;
+  }
+  table.schedule td.cell.done {
+    background: var(--accent); color: #0a1f1a; font-weight: 800;
+  }
+  table.schedule td.cell.today {
+    box-shadow: inset 0 0 0 1px var(--gold);
+  }
+  table.schedule th.col-week {
+    background: transparent; color: var(--gold); letter-spacing: 1.5px;
+    font-size: 10px; padding-bottom: 0;
+  }
+  table.schedule th.col-day {
+    background: transparent; color: var(--muted); font-weight: 500;
+    font-size: 11px;
+  }
+
+  /* ===== Journal ===== */
+  textarea.journal {
+    width: 100%; background: var(--panel-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px; color: var(--text);
+    font-family: inherit; font-size: 14px; min-height: 110px; resize: vertical;
+    outline: none;
+  }
+  textarea.journal:focus { border-color: var(--accent); }
+  .journal-list { margin-top: 14px; }
+  .journal-day {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; margin-bottom: 8px;
+  }
+  .journal-day .date {
+    font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 4px;
+  }
+  .journal-day .body { font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
+
+  /* ===== Settings ===== */
+  .settings-row {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    margin-top: 12px;
+  }
+  .settings-row label { font-size: 12px; color: var(--muted); }
+  .settings-row input[type="date"] {
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px;
+    padding: 6px 8px; color: var(--text); font-family: inherit; font-size: 13px;
+    color-scheme: dark;
+  }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .btn {
+    background: var(--accent-soft); border: 1px solid rgba(109,217,164,0.4);
+    color: var(--accent); border-radius: 8px;
+    padding: 8px 14px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+  .btn:hover { background: rgba(109,217,164,0.22); }
+  .btn.warn {
+    background: rgba(241,163,100,0.1); border-color: rgba(241,163,100,0.4);
+    color: var(--warn);
+  }
+  .btn.warn:hover { background: rgba(241,163,100,0.18); }
+
+  /* ===== Toast ===== */
+  #toast {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--panel); color: var(--text); border: 1px solid var(--line);
+    border-radius: 999px; padding: 9px 18px; font-size: 13px; font-weight: 600;
+    box-shadow: 0 10px 24px rgba(0,0,0,0.5);
+    transition: transform 0.25s ease;
+    z-index: 1000;
+  }
+  #toast.on { transform: translateX(-50%) translateY(0); }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ===== Phone ===== */
+  @media (max-width: 640px) {
+    .container { padding: 14px 14px 100px; }
+    .brand { font-size: 24px; }
+    nav.tabs button { padding: 7px 11px; font-size: 12px; }
+    .ex-counter { font-size: 10px; }
+    table.schedule { font-size: 11px; }
+    table.schedule th.row-label { min-width: 120px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div>
+      <div class="brand">Alphi's <span class="accent">Training</span></div>
+      <div class="subtitle">Bark Busters · 5-week home program</div>
+    </div>
+    <div class="day-counter">Day <b id="dayNum">—</b> · Week <b id="weekNum">—</b></div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="active" data-tab="today">Today</button>
+    <button data-tab="schedule">Schedule</button>
+    <button data-tab="reference">How To</button>
+    <button data-tab="journal">Journal</button>
+    <button data-tab="settings">Settings</button>
+  </nav>
+
+  <!-- ===== TODAY ===== -->
+  <section class="view active" id="view-today">
+    <div class="card">
+      <h2 id="todayDate">Today</h2>
+      <div class="sub">Tap each exercise as you finish a session. Tap the note button to log details.</div>
+    </div>
+    <div id="exerciseList"></div>
+    <div class="card">
+      <h3>Quick journal</h3>
+      <div class="sub">Anything notable about today's session.</div>
+      <textarea class="journal" id="todayJournal" placeholder="What worked, what didn't, behaviors you saw…"></textarea>
+    </div>
+  </section>
+
+  <!-- ===== SCHEDULE ===== -->
+  <section class="view" id="view-schedule">
+    <div class="card">
+      <h2>5-Week Schedule</h2>
+      <div class="sub">Each filled square = the exercise was logged that day. Today is outlined in gold.</div>
+      <div class="grid-wrap">
+        <table class="schedule" id="scheduleTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== REFERENCE ===== -->
+  <section class="view" id="view-reference">
+    <div class="card">
+      <h2>How To · Recommended Exercises for Alphi</h2>
+      <div class="sub">Tap any exercise to expand. Source: Bark Busters Training Exercises handout.</div>
+    </div>
+    <div id="referenceList"></div>
+  </section>
+
+  <!-- ===== JOURNAL ===== -->
+  <section class="view" id="view-journal">
+    <div class="card">
+      <h2>Journal</h2>
+      <div class="sub">Past entries, newest first.</div>
+    </div>
+    <div id="journalList" class="journal-list"></div>
+  </section>
+
+  <!-- ===== SETTINGS ===== -->
+  <section class="view" id="view-settings">
+    <div class="card">
+      <h2>Settings</h2>
+      <div class="settings-row">
+        <label>Program start</label>
+        <input type="date" id="startDate">
+      </div>
+      <div class="sub" style="margin-top:8px;">All progress lives in this browser. Export regularly to back up.</div>
+      <div class="btn-row">
+        <button class="btn" onclick="exportData()">Export JSON</button>
+        <button class="btn" onclick="document.getElementById('importFile').click()">Import JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+        <button class="btn warn" onclick="resetData()">Reset everything</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div id="toast">Saved.</div>
+
+<script>
+// ========== DATA ==========
+const LS_KEY = "alphi_training_v1";
+
+const EXERCISES = [
+  {
+    id: "attention",
+    name: "Manage Attention-Seeking Behavior",
+    body: [
+      "Ignore all demanding or attention-seeking behavior from your dog, including nudging, whining, or dropping a toy at your feet. Instead, demonstrate leadership by initiating and requesting attention on your terms. Do not look at or interact with your dog when they request attention.",
+      "Wait until your dog has left you and found something else to do, then begin play or invite them over to interact. If they continue to seek or demand your attention, STAND and \"BAH\". Refer to the Passive Influence handout for more details."
+    ]
+  },
+  {
+    id: "door_control",
+    name: "Door Control",
+    body: [
+      "You must lead through the house, yard, through the door or gate, and onto the driveway or sidewalk outside. Claim your space in front of every door or gate before inviting your dog through.",
+      "To achieve this, use \"BAH\" as you face your dog and claim the space at each exit point. Once your dog is relaxed and focused, you can calmly invite them through."
+    ]
+  },
+  {
+    id: "recall",
+    name: "Coming When Called (Recall)",
+    body: [
+      "Start this exercise off leash inside the home with no distractions. Crouch and call your dog's name, followed by \"COME\" or \"HERE\". Encourage your dog, praising every step they take in your direction. Do not grab or hold your dog — only use your hands to pet and praise.",
+      "When practicing outside and on leash, allow your dog to wander off and become distracted. Use their name along with your happy \"COME\" or \"HERE\". If your dog doesn't immediately start towards you, simultaneously and gently flick and release the leash until your dog heads in your direction. Don't grab or reach toward your dog. Have them come to you entirely on their own, then lavishly praise.",
+      "Over time and with practice, your dog will begin to respond as soon as they hear their name. Never allow your dog off leash until they are consistently responding in all situations. Daily practice will result in faster results.",
+      "You can stand and use the refocus word \"BAH\" to remind your dog of what you require if they refuse to respond to the gentle flick and release of the leash. As your dog becomes proficient, introduce distractions while you work at refocusing your dog back to you. Don't forget your praise and have fun!"
+    ]
+  },
+  {
+    id: "distance_control",
+    name: "Distance Control",
+    body: [
+      "This exercise is designed to educate your dog to respond to you regardless of distractions, and helps prevent your dog from chasing or running away from you. It is best if first performed off leash and in your home. If you are in an enclosed, secure area and your dog already responds well to your directives, you can conduct this exercise outdoors, provided that your dog cannot escape. The least-preferable option is to conduct this exercise on a long leash.",
+      "Start by using a low-level distraction. Once you see a good response, add higher value distractions, such as toys, balls, food, etc. If you lose control of any situation, return to lower value items and only move on when you are consistently achieving optimum results. If your dog is of a determined nature, you might have to clip on a leash to reinforce this exercise.",
+      "Begin by calling your dog to you. When they arrive, praise but do not pet them. As they start to move away, \"BAH\" and CLAP. Crouch slightly, encouraging your dog to come to you. STAND as they reach you. Do not tell your dog to \"sit\" or \"stay\". Do not grab or hold onto them. Keep repeating until your dog settles (lays or sits).",
+      "Once they have settled, praise and give your dog some pets. Avoid moving toward your dog — it is better to back away. This important exercise takes time to perfect, and practice makes perfect. The ultimate goal is to have your dog stop what they are doing and immediately return to you."
+    ]
+  },
+  {
+    id: "front_door",
+    name: "Claiming Front Door 'No-Go Zone'",
+    body: [
+      "If your dog rushes to answer the front door every time someone visits, you need to claim the front door area as your own. Position yourself between the dog and the door. \"BAH\" and CLAP, and guide your dog to an area away from the door. Back up towards the door and address any of your dog's movements to follow you.",
+      "Greet your guest, invite them in, and ignore the dog.",
+      "If your dog is fearful or aggressive, you can have your visitor toss a treat onto the floor, making sure they avoid eye contact.",
+      "There is no need for your dog to sit and stay; they just need to learn that answering the door is not their responsibility and to go and relax elsewhere."
+    ]
+  },
+  {
+    id: "stairs",
+    name: "Stairs",
+    body: [
+      "With your dog on a leash, practice going up and down the stairs.",
+      "If your dog begins to pass you, \"BAH\" so they stop. If your dog passes you, turn and walk in the opposite direction. Teach your dog to follow two steps behind so they never get in front of you."
+    ]
+  },
+  {
+    id: "attentiveness",
+    name: "Attentiveness Training",
+    body: [
+      "This should be done every time you take your dog for a walk. The purpose is to teach your dog to focus on you, rather than distractions.",
+      "Start inside the house or backyard. Holding the end of the leash, purposefully walk off in a direction with your dog following, watching them out of the corner of your eye. If your dog starts to advance ahead of you, turn around and walk in the opposite direction. Continue until your dog starts to watch you and anticipate your movements. This may take 30 seconds or 30 minutes (or more), and can serve as a substitute for a normal walk. For especially exuberant dogs, use a long leash to introduce this exercise.",
+      "Initially, walk a predictable grid. Do not proceed to a more distracting environment (e.g. a park) or start walking your dog in the normal manner until their attention is on you. Vary your pace and direction to keep them guessing. Remember that this is a zig-zagging, follow-the-leader exercise — your dog should not be allowed to get even a little in front of you."
+    ]
+  },
+  {
+    id: "walking",
+    name: "Walking",
+    body: [
+      "Proper leash walking is an important part of being a leader. Your initial goal is not to make time or cover distance on walks — instead, limit the routes you take and walk only one or two steps at a time at first to improve timing and communication with your dog.",
+      "Keep your dog's front legs in line with or behind your legs. If your dog begins to pass you, use a gentle flick and release on the collar or harness to tell them they should not be ahead of you. Keep your leash loose. A tight leash will only encourage your dog to pull to the end of the leash.",
+      "Immediately praise your dog when they are in the right position."
+    ]
+  },
+  {
+    id: "barking",
+    name: "Barking",
+    body: [
+      "Timing is important when it comes to solving your dog's barking problems. Set up the exercises as explained by your Bark Busters trainer and be sure to refocus your dog when you catch them in the act.",
+      "Consistency and patience are the key ingredients. You must catch your dog while barking — timing is key to solving the problem.",
+      "Inside: As soon as your dog begins to bark, use a strong \"BAH\". Praise when the barking stops and your dog is quiet for a few seconds. If your dog barks after you leave, you should \"BAH!\" from outside the door.",
+      "Outside: If your dog barks along a fence, use a training aid simultaneously with a strong \"BAH\". Praise when your dog stops barking. Call your trainer if your dog is not responding or reverts back to barking."
+    ]
+  },
+  {
+    id: "jumping",
+    name: "Jumping Up",
+    body: [
+      "Jumping is a habit many dog owners wish they had addressed when their dog was a puppy. It is most effective to address this behavior BEFORE your dog actually jumps. You may need to use training aids with this exercise.",
+      "As your dog tenses to jump, stand tall and \"BAH\". Give immediate praise when your dog has their four paws on the floor. It is important not to overreact and push your dog or step back — these actions only serve to keep your dog repeating the behavior."
+    ]
+  }
+];
+
+// ========== STATE ==========
+function defaultState() {
+  return {
+    startDate: todayKey(),
+    logs: {}    // dateKey -> { checks: {exId: bool}, notes: {exId: str}, journal: str }
+  };
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    return Object.assign(defaultState(), parsed);
+  } catch (e) { return defaultState(); }
+}
+
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+  catch (e) { console.error("save failed", e); }
+}
+
+let state = load();
+
+// ========== HELPERS ==========
+function todayKey() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+function parseDate(k) { const [y,m,d] = k.split("-").map(Number); return new Date(y, m-1, d); }
+function fmtDate(d) {
+  return d.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+}
+function daysBetween(a, b) {
+  const ms = 24*60*60*1000;
+  return Math.round((parseDate(b) - parseDate(a)) / ms);
+}
+function dayNumber() {
+  return Math.max(1, daysBetween(state.startDate, todayKey()) + 1);
+}
+function weekNumber() {
+  return Math.min(5, Math.ceil(dayNumber() / 7));
+}
+function getLog(dateKey) {
+  if (!state.logs[dateKey]) state.logs[dateKey] = { checks: {}, notes: {}, journal: "" };
+  return state.logs[dateKey];
+}
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" })[c]);
+}
+function toast(msg = "Saved") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("on");
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove("on"), 1500);
+}
+
+// ========== TODAY VIEW ==========
+function renderToday() {
+  document.getElementById("todayDate").textContent = fmtDate(parseDate(todayKey()));
+  document.getElementById("dayNum").textContent = dayNumber();
+  document.getElementById("weekNum").textContent = weekNumber() + " of 5";
+  const log = getLog(todayKey());
+  const host = document.getElementById("exerciseList");
+  host.innerHTML = "";
+  EXERCISES.forEach(ex => {
+    const done = !!log.checks[ex.id];
+    const sessionCount = countSessions(ex.id);
+    const row = document.createElement("div");
+    row.className = "ex" + (done ? " done" : "");
+    row.innerHTML = `
+      <div class="ex-head">
+        <button class="ex-check" onclick="toggleCheck('${ex.id}')" aria-label="Mark ${escapeHtml(ex.name)}">✓</button>
+        <div class="ex-title">${escapeHtml(ex.name)}</div>
+        <div class="ex-counter"><b>${sessionCount}</b> ${sessionCount === 1 ? "day" : "days"}</div>
+      </div>
+      <div class="ex-actions">
+        <button class="ex-btn" onclick="toggleNote('${ex.id}')">${log.notes[ex.id] ? "Edit note" : "Add note"}</button>
+      </div>
+      <div id="note-${ex.id}" style="display:${log.notes[ex.id] ? "block" : "none"};">
+        <textarea class="ex-note" data-ex="${ex.id}" placeholder="Reps, response, what worked…">${escapeHtml(log.notes[ex.id] || "")}</textarea>
+      </div>
+    `;
+    host.appendChild(row);
+  });
+  // Wire note input handlers
+  host.querySelectorAll(".ex-note").forEach(t => {
+    t.addEventListener("input", e => {
+      const exId = e.target.dataset.ex;
+      const log = getLog(todayKey());
+      log.notes[exId] = e.target.value;
+      save();
+    });
+  });
+  // Wire today's journal
+  const j = document.getElementById("todayJournal");
+  j.value = log.journal || "";
+  j.oninput = () => { log.journal = j.value; save(); };
+}
+function toggleCheck(exId) {
+  const log = getLog(todayKey());
+  log.checks[exId] = !log.checks[exId];
+  save(); renderToday();
+  toast(log.checks[exId] ? "Logged ✓" : "Unchecked");
+}
+function toggleNote(exId) {
+  const el = document.getElementById("note-" + exId);
+  const open = el.style.display !== "none";
+  el.style.display = open ? "none" : "block";
+  if (!open) el.querySelector("textarea").focus();
+}
+function countSessions(exId) {
+  let n = 0;
+  for (const k of Object.keys(state.logs)) {
+    if (state.logs[k].checks?.[exId]) n++;
+  }
+  return n;
+}
+
+// ========== SCHEDULE VIEW ==========
+function renderSchedule() {
+  const start = parseDate(state.startDate);
+  const today = todayKey();
+  const t = document.getElementById("scheduleTable");
+  // Header rows: weeks, days within
+  let html = "<tr><th class='row-label'></th>";
+  for (let w = 1; w <= 5; w++) {
+    html += `<th class='col-week' colspan='7'>WEEK ${w}</th>`;
+  }
+  html += "</tr><tr><th class='row-label'>Exercise</th>";
+  for (let w = 1; w <= 5; w++) {
+    for (let d = 1; d <= 7; d++) html += `<th class='col-day'>${d}</th>`;
+  }
+  html += "</tr>";
+  // One row per exercise
+  EXERCISES.forEach(ex => {
+    html += `<tr><th class='row-label'>${escapeHtml(ex.name)}</th>`;
+    for (let w = 0; w < 5; w++) {
+      for (let d = 0; d < 7; d++) {
+        const idx = w * 7 + d;
+        const date = new Date(start);
+        date.setDate(date.getDate() + idx);
+        const k = date.getFullYear() + "-" + String(date.getMonth()+1).padStart(2,"0") + "-" + String(date.getDate()).padStart(2,"0");
+        const done = !!state.logs[k]?.checks?.[ex.id];
+        const isToday = k === today;
+        html += `<td class='cell ${done ? "done" : ""} ${isToday ? "today" : ""}'>${done ? "✓" : ""}</td>`;
+      }
+    }
+    html += "</tr>";
+  });
+  t.innerHTML = html;
+}
+
+// ========== REFERENCE VIEW ==========
+function renderReference() {
+  const host = document.getElementById("referenceList");
+  host.innerHTML = "";
+  EXERCISES.forEach(ex => {
+    const det = document.createElement("details");
+    det.className = "ref";
+    const lead = ex.body[0];
+    const rest = ex.body.slice(1);
+    det.innerHTML = `
+      <summary>${escapeHtml(ex.name)}</summary>
+      <div class="ref-body">
+        <p class="lead">${escapeHtml(lead)}</p>
+        ${rest.map(p => `<p>${escapeHtml(p)}</p>`).join("")}
+      </div>
+    `;
+    host.appendChild(det);
+  });
+}
+
+// ========== JOURNAL VIEW ==========
+function renderJournal() {
+  const host = document.getElementById("journalList");
+  host.innerHTML = "";
+  const dates = Object.keys(state.logs).filter(k => state.logs[k].journal && state.logs[k].journal.trim()).sort().reverse();
+  if (!dates.length) {
+    host.innerHTML = `<div class="card" style="text-align:center;color:var(--muted);">No journal entries yet. Add one in Today.</div>`;
+    return;
+  }
+  dates.forEach(k => {
+    const e = document.createElement("div");
+    e.className = "journal-day";
+    e.innerHTML = `
+      <div class="date">${escapeHtml(fmtDate(parseDate(k)))}</div>
+      <div class="body">${escapeHtml(state.logs[k].journal)}</div>
+    `;
+    host.appendChild(e);
+  });
+}
+
+// ========== SETTINGS ==========
+function renderSettings() {
+  const inp = document.getElementById("startDate");
+  inp.value = state.startDate;
+  inp.onchange = e => {
+    state.startDate = e.target.value || todayKey();
+    save(); renderAll();
+  };
+}
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = `alphi_training_${todayKey()}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  toast("Exported");
+}
+function importData(ev) {
+  const f = ev.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (!parsed || typeof parsed !== "object") throw new Error("bad file");
+      state = Object.assign(defaultState(), parsed);
+      save(); renderAll(); toast("Imported");
+    } catch (err) { toast("Invalid file"); }
+  };
+  r.readAsText(f);
+}
+function resetData() {
+  if (!confirm("Reset all training data? This cannot be undone.")) return;
+  localStorage.removeItem(LS_KEY);
+  state = defaultState(); save(); renderAll();
+  toast("Reset");
+}
+
+// ========== TABS ==========
+function setupTabs() {
+  document.querySelectorAll("nav.tabs button").forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll("nav.tabs button").forEach(x => x.classList.remove("active"));
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      b.classList.add("active");
+      document.getElementById("view-" + b.dataset.tab).classList.add("active");
+      // Re-render the view in case data changed
+      if (b.dataset.tab === "schedule") renderSchedule();
+      if (b.dataset.tab === "reference") renderReference();
+      if (b.dataset.tab === "journal") renderJournal();
+      if (b.dataset.tab === "today") renderToday();
+      if (b.dataset.tab === "settings") renderSettings();
+    };
+  });
+}
+
+function renderAll() {
+  renderToday();
+  renderSchedule();
+  renderReference();
+  renderJournal();
+  renderSettings();
+}
+
+setupTabs();
+renderAll();
+</script>
+</body>
+</html>
