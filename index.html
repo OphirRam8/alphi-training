@@ -389,6 +389,7 @@
     <button class="active" data-tab="today">Today</button>
     <button data-tab="schedule">Schedule</button>
     <button data-tab="reference">How To</button>
+    <button data-tab="cesar">Cesar</button>
     <button data-tab="lessons">Lessons</button>
     <button data-tab="journal">Journal</button>
     <button data-tab="settings">Settings</button>
@@ -426,6 +427,15 @@
       <div class="sub">Tap any exercise to expand. Source: Bark Busters Training Exercises handout.</div>
     </div>
     <div id="referenceList"></div>
+  </section>
+
+  <!-- ===== CESAR MILLAN ===== -->
+  <section class="view" id="view-cesar">
+    <div class="card">
+      <h2>Cesar Millan · Method & Skill Progression</h2>
+      <div class="sub">A different lens — calm-assertive leadership and the Exercise · Discipline · Affection (EDA) order. Tap any section to expand.</div>
+    </div>
+    <div id="cesarList"></div>
   </section>
 
   <!-- ===== LESSONS ===== -->
@@ -774,6 +784,257 @@ const LESSONS = [
   }
 ];
 
+
+// ========== CESAR MILLAN ==========
+// A separate framework — different from Bark Busters. Organized for daily reference.
+const CESAR_SECTIONS = [
+  {
+    heading: "Core Philosophy",
+    intro: "The internal-state work — what the human brings into every interaction.",
+    cards: [
+      {
+        title: "Dog Psychology vs. Human Psychology",
+        body: [
+          "Dogs are <b>animals first, then species, then breed, then name.</b> Many problems start when we relate to a dog like a human child.",
+          "Dogs experience the world through nose, eyes, and ears. They live in the moment and respond to <b>energy, body language, and timing</b> — not the words you say.",
+          "The owner's internal state is the primary training tool. Calm, grounded energy invites calm behavior; anxious or excited energy produces instability."
+        ]
+      },
+      {
+        title: "Calm-Assertive Leadership",
+        body: [
+          "<b>Calm</b> first: relaxed, patient, emotionally neutral. <b>Assertive</b> second: clear, consistent follow-through.",
+          "Communicated through posture, movement, and timing — not volume or force. The goal is to guide, not intimidate.",
+          "Leadership is a service role: the leader fulfills the pack's needs and sets boundaries so followers can relax. Avoiding problems out of guilt creates a leadership vacuum the dog will fill."
+        ]
+      },
+      {
+        title: "Exercise · Discipline · Affection (EDA)",
+        body: [
+          "The fulfillment formula — <b>in this order</b>:",
+          "<b>1. Exercise</b> — structured physical and mental work that drains pent-up energy and engages instincts.",
+          "<b>2. Discipline</b> — rules, boundaries, and limitations that shape choices (not punishment).",
+          "<b>3. Affection</b> — petting, praise, food, privileges, given <i>only when the dog is calm</i>.",
+          "Most owners invert this — they give affection first to an under-exercised dog and unintentionally reinforce excited or anxious states."
+        ]
+      },
+      {
+        title: "Rules · Boundaries · Limitations",
+        body: [
+          "<b>Rules</b> — explicit expectations: \"no pulling,\" \"wait at the door,\" \"no jumping on guests.\"",
+          "<b>Boundaries</b> — physical or spatial lines: \"stay behind this threshold,\" \"do not enter the kitchen.\"",
+          "<b>Limitations</b> — caps on intensity or duration: when play ends, when the walk is over, how much freedom in a context.",
+          "Dogs find comfort in this structure. It clarifies what's expected, reduces anxiety, and earns more freedom over time."
+        ]
+      },
+      {
+        title: "Energy, Timing & Body Language",
+        body: [
+          "Calm posture, steady breathing, relaxed shoulders, assertive forward movement = leadership.",
+          "Frantic gestures, leaning over the dog, emotional outbursts = instability.",
+          "<b>Timing matters most.</b> Correct or redirect the moment escalation begins — not after the behavior fully expresses.",
+          "<b>\"Claim\"</b> space and objects by occupying them first with confident, relaxed energy, then invite the dog in once calm."
+        ]
+      }
+    ]
+  },
+  {
+    heading: "Key Concepts in Practice",
+    intro: "Day-to-day applications of the philosophy.",
+    cards: [
+      {
+        title: "Thresholds & Impulse Control",
+        body: [
+          "Doorways, gates, car doors — teach the dog to <b>wait for permission</b>, not charge through.",
+          "Self-control is more tiring than physical exercise. The dog learns that approaching a threshold doesn't mean going through; it means checking in with you.",
+          "Same principle applies to food: dog waits calmly while food is prepared and placed. Release with a clear signal (eye contact, gesture, or word) before eating."
+        ]
+      },
+      {
+        title: "Leash Walking & Following",
+        body: [
+          "The balanced walk is the <b>foundation of the relationship</b>. Dog walks beside or slightly behind you, following without pulling.",
+          "Start the walk only when the dog is calm at the door. Maintain a short but relaxed leash — leash tension is a communication tool, not a constant state.",
+          "Walk before play or affection. The walk satisfies the migration instinct and sets the tone for respect and cooperation."
+        ]
+      },
+      {
+        title: "Red-Zone & High-Intensity Cases",
+        body: [
+          "\"Red-zone\" = severe aggression, resource guarding, or intense fear reactions. Read <b>early signals</b> (stiffness, hard eye contact, energy spikes) and intervene <i>before</i> the outburst.",
+          "Goal is to <b>block the red-zone state</b>, not inflict pain. Calm-assertive intervention, never anger.",
+          "Master leadership in everyday low-stakes contexts (walks, doors, feeding, home rules) <b>before</b> attempting to handle dangerous behavior. For severe cases, get a qualified pro on-site."
+        ]
+      }
+    ]
+  },
+  {
+    heading: "Beginner Level · Foundation of Calm Leadership",
+    intro: "Daily reps. Master these before moving to intermediate.",
+    cards: [
+      {
+        title: "1. Self-Management & Energy Awareness",
+        body: [
+          "Before every interaction: slow your breathing, relax your shoulders, commit to a calm-assertive intention.",
+          "<b>Move more, talk less</b> — direct with posture, eye contact, and quiet gestures.",
+          "Don't approach the dog when frustrated, anxious, or rushed. Wait until you can project calm, <i>then</i> initiate."
+        ]
+      },
+      {
+        title: "2. Daily Structured Walk (exercise first)",
+        body: [
+          "1–2 structured walks per day. Primary goal = <b>mental focus and following</b>, not free sniffing.",
+          "Start the walk only when the dog is calm at the door. If excited, step away and wait. Repeat until calm is offered.",
+          "Short but relaxed leash. Dog at your side or slightly behind. Correct gently when forging ahead, relax the leash the moment they return."
+        ]
+      },
+      {
+        title: "3. Basic Rules in the Home",
+        body: [
+          "Establish 2–3 simple rules: \"no rushing through doors,\" \"no jumping on people,\" \"no begging at the table.\" Enforce <b>100% of the time</b>.",
+          "Use calm <b>body blocking</b> to prevent violations — step into the dog's space to redirect. No pushing, no yelling.",
+          "Reward compliance with <b>access</b> (door opens, guest greets, meal appears), not immediate petting. Affection comes after calm + respect."
+        ]
+      },
+      {
+        title: "4. Food & Resource Routine",
+        body: [
+          "Dog sits or stands calmly while you prepare food. If they jump or crowd, step away until calm. Try again.",
+          "Place the bowl down and stand between dog and food until they wait calmly. Then give a clear release signal.",
+          "Remove leftover food after a reasonable time. Reinforces that <b>you control the resources</b>."
+        ]
+      },
+      {
+        title: "5. Affection in the Right State",
+        body: [
+          "Reserve petting and cuddling for moments when the dog is <b>calm, lying down, or resting</b> — not demanding, whining, or hyper.",
+          "If they seek attention insistently, wait for a pause or moment of calm, then invite them in <i>on your terms</i>."
+        ]
+      }
+    ]
+  },
+  {
+    heading: "Intermediate Level · Structure, Boundaries, Mental Work",
+    intro: "Once basics are reliable. Adds nuance and respect for boundaries.",
+    cards: [
+      {
+        title: "1. Advanced Threshold Work",
+        body: [
+          "Longer \"wait\" periods at doors, gates, car doors. Change your position (walk through first, then invite) to reinforce that crossing depends on permission.",
+          "Add distractions while keeping the rule: dog doesn't cross until released."
+        ]
+      },
+      {
+        title: "2. Spatial Boundaries in the Home",
+        body: [
+          "Define no-go areas (kitchen during cooking, baby's room, certain furniture). Body-block or redirect consistently.",
+          "Use <b>place commands</b> — designated spots (bed, mat) where the dog goes to relax while family activity continues."
+        ]
+      },
+      {
+        title: "3. Leash Skills & Environmental Leadership",
+        body: [
+          "Vary walking environments (quiet streets, busier areas, parks) while keeping the same rules on position and pace.",
+          "When the dog gets alert or mildly reactive, redirect <i>before</i> escalation: change direction, ask for a pause, calmly block forward motion until they relax."
+        ]
+      },
+      {
+        title: "4. Structured Socialization",
+        body: [
+          "Introduce to stable, balanced dogs in controlled settings. Meet <b>in motion</b> (parallel walking) rather than head-on.",
+          "Intervene early at energy spikes — staring, stiffening, mounting. Calmly move between the dogs or redirect attention. You are the referee."
+        ]
+      },
+      {
+        title: "5. Mental Challenges & Instinctive Work",
+        body: [
+          "Add jobs that suit the dog's instincts — tracking games, scent work, problem-solving — <b>before</b> affection or free play.",
+          "Drains mental energy and satisfies the work drive. The dog will be more relaxed at home."
+        ]
+      }
+    ]
+  },
+  {
+    heading: "Advanced Level · Handling Challenging Behaviors",
+    intro: "Not more force — more sensitivity, earlier intervention, more precise control. Only attempt once intermediate is consistent.",
+    cards: [
+      {
+        title: "1. Reading Early Warning Signs",
+        body: [
+          "Train yourself to notice subtle shifts: <b>stiff body, ears forward, hard eye contact, weight shift, sudden stillness</b>.",
+          "Interrupt at this early stage — leash guidance, step into space, change of direction. Don't wait for the full outburst."
+        ]
+      },
+      {
+        title: "2. Blocking Red-Zone Escalation",
+        body: [
+          "If the dog has a history of intense reactions, <b>don't rehearse the trigger</b>. Set up controlled distance and intensity (see other dogs at a distance where yours stays under threshold).",
+          "Use movement (walking in arcs, backing away, turning aside) plus calm-assertive posture. Show the dog you manage the situation so they don't have to explode."
+        ]
+      },
+      {
+        title: "3. Owner–Dog Separation When Needed",
+        body: [
+          "If your emotions make you less effective (fear, embarrassment, anger), step back and let a more neutral handler work with the dog.",
+          "Use this as <b>information about your own triggers</b>. Work on confidence and calm before resuming leadership in similar contexts."
+        ]
+      },
+      {
+        title: "4. High-Distraction Obedience with Leadership Focus",
+        body: [
+          "Practice recall, stays, and leash following around strong distractions (other dogs, wildlife, food on the ground).",
+          "Keep your primary focus on <b>energy and body language</b>, not formal cues alone. Increase difficulty only when calm and responsive at the current level."
+        ]
+      },
+      {
+        title: "5. Integrating Tools Responsibly",
+        body: [
+          "Tools (slip leads, training collars, treadmills, GPS collars) are <b>extensions of leadership</b>, not substitutes.",
+          "Tools communicate your calm-assertive intent. Pair them with structure and meaningful exercise — never use as shortcuts in place of fulfilling the dog's needs."
+        ]
+      }
+    ]
+  },
+  {
+    heading: "Daily Routine Blueprint",
+    intro: "Front-load exercise and structure. Layer affection in once the dog is calm.",
+    cards: [
+      {
+        title: "Morning",
+        body: [
+          "Center yourself first — breathing, calm intention.",
+          "Structured walk. Focus on following and calm energy.",
+          "Threshold practice at the door before and after the walk."
+        ]
+      },
+      {
+        title: "Midday",
+        body: [
+          "Short walk or play session.",
+          "A few minutes of mental work — scent games, simple problem-solving — to drain energy.",
+          "Reinforce home rules as daily life unfolds (no jumping, no rushing the door, stay out of certain rooms)."
+        ]
+      },
+      {
+        title: "Evening",
+        body: [
+          "Moderate walk or structured play.",
+          "Calm affection — only when the dog is relaxed.",
+          "Place / mat work during family time. Dog learns to be calm at a distance while people move around."
+        ]
+      },
+      {
+        title: "Weekly Focus Themes",
+        body: [
+          "<b>Week 1–2</b> — your calm-assertive energy and the structured walk. Keep rules simple. Focus on consistency.",
+          "<b>Week 3–4</b> — layer in more threshold work and home boundaries. Introduce basic mental challenges.",
+          "<b>Week 5+</b> — gradually expose to more challenging environments and distractions while preserving the same structure and energy."
+        ]
+      }
+    ]
+  }
+];
+
 // ========== STATE ==========
 function defaultState() {
   return {
@@ -1073,6 +1334,39 @@ function renderLessons() {
   });
 }
 
+// ========== CESAR MILLAN VIEW ==========
+function renderCesar() {
+  const host = document.getElementById("cesarList");
+  host.innerHTML = "";
+  CESAR_SECTIONS.forEach(section => {
+    const header = document.createElement("div");
+    header.className = "ref-divider";
+    header.textContent = section.heading;
+    host.appendChild(header);
+    if (section.intro) {
+      const intro = document.createElement("div");
+      intro.style.cssText = "font-size:13px;color:var(--muted);margin:-4px 4px 8px;line-height:1.5;";
+      intro.textContent = section.intro;
+      host.appendChild(intro);
+    }
+    section.cards.forEach(card => {
+      const det = document.createElement("details");
+      det.className = "ref";
+      const lead = card.body[0];
+      const rest = card.body.slice(1);
+      // Body items may contain controlled inline HTML (<b>, <i>) — keep as-is.
+      det.innerHTML = `
+        <summary>${escapeHtml(card.title)}</summary>
+        <div class="ref-body">
+          <p class="lead">${lead}</p>
+          ${rest.map(p => `<p>${p}</p>`).join("")}
+        </div>
+      `;
+      host.appendChild(det);
+    });
+  });
+}
+
 // ========== JOURNAL VIEW ==========
 function renderJournal() {
   const host = document.getElementById("journalList");
@@ -1141,6 +1435,7 @@ function setupTabs() {
       // Re-render the view in case data changed
       if (b.dataset.tab === "schedule") renderSchedule();
       if (b.dataset.tab === "reference") renderReference();
+      if (b.dataset.tab === "cesar") renderCesar();
       if (b.dataset.tab === "lessons") renderLessons();
       if (b.dataset.tab === "journal") renderJournal();
       if (b.dataset.tab === "today") renderToday();
@@ -1153,6 +1448,7 @@ function renderAll() {
   renderToday();
   renderSchedule();
   renderReference();
+  renderCesar();
   renderLessons();
   renderJournal();
   renderSettings();
