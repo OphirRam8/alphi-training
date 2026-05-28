@@ -503,6 +503,15 @@
         <button class="btn warn" onclick="resetData()">Reset everything</button>
       </div>
     </div>
+
+    <div class="card" style="margin-top:14px;">
+      <h2>Sync to Notion</h2>
+      <div class="sub" style="margin-top:4px;">Push all logged days to the Alphi Training Notion DB. Requires the Mac backend to be running.</div>
+      <div class="btn-row" style="margin-top:10px;">
+        <button class="btn" id="syncNotionBtn" onclick="syncToNotion()">↗ Sync now</button>
+      </div>
+      <div id="syncStatus" class="sub" style="margin-top:8px; min-height: 18px;"></div>
+    </div>
   </section>
 
 </div>
@@ -1599,6 +1608,40 @@ function renderSettings() {
     save(); renderAll();
   };
 }
+// Sync localStorage state to the Notion DB via the Mac backend (tunnel URL pulled from gist pointer)
+const TUNNEL_URL_GIST = "https://gist.githubusercontent.com/OphirRam8/366888d4044a54b2ce6f05fd0e08f97e/raw";
+async function syncToNotion() {
+  const btn = document.getElementById("syncNotionBtn");
+  const status = document.getElementById("syncStatus");
+  btn.disabled = true;
+  status.textContent = "Resolving tunnel URL…";
+  try {
+    const gistRes = await fetch(`${TUNNEL_URL_GIST}?t=${Date.now()}`);
+    if (!gistRes.ok) throw new Error(`gist HTTP ${gistRes.status}`);
+    const tunnelUrl = (await gistRes.text()).trim();
+    if (!tunnelUrl.startsWith("http")) throw new Error("invalid tunnel URL");
+    status.textContent = "Pushing to Mac backend…";
+    const exerciseLabels = {};
+    for (const ex of EXERCISES) exerciseLabels[ex.id] = ex.name;
+    const res = await fetch(`${tunnelUrl}/api/alphi/sync`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ state, exerciseLabels })
+    });
+    if (!res.ok) {
+      const err = await res.text().catch(() => "");
+      throw new Error(`HTTP ${res.status} ${err.slice(0, 120)}`);
+    }
+    const json = await res.json();
+    status.textContent = `✓ Synced ${json.synced} day${json.synced === 1 ? "" : "s"}${json.errors ? ` · ${json.errors} errors` : ""}.`;
+    toast("Synced to Notion");
+  } catch (e) {
+    status.textContent = `✗ ${e.message || "Sync failed"}. Make sure the Mac is on + tunnel is up.`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 function exportData() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
