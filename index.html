@@ -1635,27 +1635,63 @@ function renderLastSyncedHint() {
   if (!ts) { setSyncStatusText("Not synced yet."); return; }
   setSyncStatusText(`Last synced ${fmtTimeAgo(ts)}.`);
 }
+// Per-date hash cache — used to diff what's actually changed since the last successful sync.
+const SYNCED_LOGS_KEY = "alphi_synced_logs_cache";
+function loadSyncedCache() {
+  try { return JSON.parse(localStorage.getItem(SYNCED_LOGS_KEY) || "{}"); }
+  catch { return {}; }
+}
+function saveSyncedCache(cache) {
+  try { localStorage.setItem(SYNCED_LOGS_KEY, JSON.stringify(cache)); } catch {}
+}
+
 async function syncToNotion(silent) {
   const btn = document.getElementById("syncNotionBtn");
   if (btn && !silent) { btn.disabled = true; setSyncStatusText("Syncing…"); }
   try {
+    // Diff: only days whose JSON differs from the last successfully synced version
+    const synced = loadSyncedCache();
+    const dirtyLogs = {};
+    const dirtyDates = [];
+    for (const date of Object.keys(state.logs || {})) {
+      const cur = JSON.stringify(state.logs[date]);
+      if (cur !== synced[date]) {
+        dirtyLogs[date] = state.logs[date];
+        dirtyDates.push(date);
+      }
+    }
+    if (dirtyDates.length === 0) {
+      if (!silent) setSyncStatusText("Already up to date.");
+      else renderLastSyncedHint();
+      return;
+    }
+
     const gistRes = await fetch(`${TUNNEL_URL_GIST}?t=${Date.now()}`);
     if (!gistRes.ok) throw new Error(`gist HTTP ${gistRes.status}`);
     const tunnelUrl = (await gistRes.text()).trim();
     if (!tunnelUrl.startsWith("http")) throw new Error("invalid tunnel URL");
     const exerciseLabels = {};
     for (const ex of EXERCISES) exerciseLabels[ex.id] = ex.name;
+
     const res = await fetch(`${tunnelUrl}/api/alphi/sync`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ state, exerciseLabels })
+      body: JSON.stringify({
+        state: { startDate: state.startDate, logs: dirtyLogs },
+        exerciseLabels
+      })
     });
     if (!res.ok) {
       const err = await res.text().catch(() => "");
       throw new Error(`HTTP ${res.status} ${err.slice(0, 120)}`);
     }
     const json = await res.json();
+
+    // On success, update the per-date hash cache so next sync diffs against the new baseline
+    for (const date of dirtyDates) synced[date] = JSON.stringify(state.logs[date]);
+    saveSyncedCache(synced);
     localStorage.setItem(LAST_SYNC_KEY, String(Date.now()));
+
     if (!silent) {
       setSyncStatusText(`✓ Synced ${json.synced} day${json.synced === 1 ? "" : "s"}${json.errors ? ` · ${json.errors} errors` : ""}.`);
       toast("Synced");
@@ -1697,6 +1733,7 @@ function importData(ev) {
       const parsed = JSON.parse(e.target.result);
       if (!parsed || typeof parsed !== "object") throw new Error("bad file");
       state = Object.assign(defaultState(), parsed);
+      localStorage.removeItem(SYNCED_LOGS_KEY); // force full re-sync after import
       save(); renderAll(); toast("Imported");
     } catch (err) { toast("Invalid file"); }
   };
@@ -1705,6 +1742,7 @@ function importData(ev) {
 function resetData() {
   if (!confirm("Reset all training data? This cannot be undone.")) return;
   localStorage.removeItem(LS_KEY);
+  localStorage.removeItem(SYNCED_LOGS_KEY);
   state = defaultState(); save(); renderAll();
   toast("Reset");
 }
