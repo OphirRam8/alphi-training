@@ -506,9 +506,9 @@
 
     <div class="card" style="margin-top:14px;">
       <h2>Sync to Notion</h2>
-      <div class="sub" style="margin-top:4px;">Push all logged days to the Alphi Training Notion DB. Requires the Mac backend to be running.</div>
+      <div class="sub" style="margin-top:4px;">Auto-syncs in the background after every change + when you close the tab. Tap below to force a sync now.</div>
       <div class="btn-row" style="margin-top:10px;">
-        <button class="btn" id="syncNotionBtn" onclick="syncToNotion()">↗ Sync now</button>
+        <button class="btn" id="syncNotionBtn" onclick="syncToNotion(false)">↗ Sync now</button>
       </div>
       <div id="syncStatus" class="sub" style="margin-top:8px; min-height: 18px;"></div>
     </div>
@@ -1259,6 +1259,14 @@ function load() {
 function save() {
   try { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
   catch (e) { console.error("save failed", e); }
+  scheduleAutoSync();
+}
+
+// Auto-sync: debounced 3s after the last save, runs silently in the background.
+let autoSyncTimer = null;
+function scheduleAutoSync() {
+  if (autoSyncTimer) clearTimeout(autoSyncTimer);
+  autoSyncTimer = setTimeout(() => { syncToNotion(true).catch(() => {}); }, 3000);
 }
 
 let state = load();
@@ -1610,17 +1618,31 @@ function renderSettings() {
 }
 // Sync localStorage state to the Notion DB via the Mac backend (tunnel URL pulled from gist pointer)
 const TUNNEL_URL_GIST = "https://gist.githubusercontent.com/OphirRam8/366888d4044a54b2ce6f05fd0e08f97e/raw";
-async function syncToNotion() {
+const LAST_SYNC_KEY = "alphi_last_sync_ts";
+function setSyncStatusText(text) {
+  const el = document.getElementById("syncStatus");
+  if (el) el.textContent = text;
+}
+function fmtTimeAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s/60)}m ago`;
+  if (s < 86400) return `${Math.floor(s/3600)}h ago`;
+  return `${Math.floor(s/86400)}d ago`;
+}
+function renderLastSyncedHint() {
+  const ts = parseInt(localStorage.getItem(LAST_SYNC_KEY) || "0", 10);
+  if (!ts) { setSyncStatusText("Not synced yet."); return; }
+  setSyncStatusText(`Last synced ${fmtTimeAgo(ts)}.`);
+}
+async function syncToNotion(silent) {
   const btn = document.getElementById("syncNotionBtn");
-  const status = document.getElementById("syncStatus");
-  btn.disabled = true;
-  status.textContent = "Resolving tunnel URL…";
+  if (btn && !silent) { btn.disabled = true; setSyncStatusText("Syncing…"); }
   try {
     const gistRes = await fetch(`${TUNNEL_URL_GIST}?t=${Date.now()}`);
     if (!gistRes.ok) throw new Error(`gist HTTP ${gistRes.status}`);
     const tunnelUrl = (await gistRes.text()).trim();
     if (!tunnelUrl.startsWith("http")) throw new Error("invalid tunnel URL");
-    status.textContent = "Pushing to Mac backend…";
     const exerciseLabels = {};
     for (const ex of EXERCISES) exerciseLabels[ex.id] = ex.name;
     const res = await fetch(`${tunnelUrl}/api/alphi/sync`, {
@@ -1633,14 +1655,31 @@ async function syncToNotion() {
       throw new Error(`HTTP ${res.status} ${err.slice(0, 120)}`);
     }
     const json = await res.json();
-    status.textContent = `✓ Synced ${json.synced} day${json.synced === 1 ? "" : "s"}${json.errors ? ` · ${json.errors} errors` : ""}.`;
-    toast("Synced to Notion");
+    localStorage.setItem(LAST_SYNC_KEY, String(Date.now()));
+    if (!silent) {
+      setSyncStatusText(`✓ Synced ${json.synced} day${json.synced === 1 ? "" : "s"}${json.errors ? ` · ${json.errors} errors` : ""}.`);
+      toast("Synced");
+    } else {
+      renderLastSyncedHint();
+    }
   } catch (e) {
-    status.textContent = `✗ ${e.message || "Sync failed"}. Make sure the Mac is on + tunnel is up.`;
+    if (!silent) {
+      setSyncStatusText(`✗ ${e.message || "Sync failed"}. Mac on + tunnel up?`);
+    }
+    // silent: swallow — will retry on next save
   } finally {
-    btn.disabled = false;
+    if (btn && !silent) btn.disabled = false;
   }
 }
+
+// On app open, sync once silently. Also sync when the page is hidden / closed.
+window.addEventListener("load", () => {
+  renderLastSyncedHint();
+  setTimeout(() => syncToNotion(true).catch(() => {}), 1500);
+});
+window.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") syncToNotion(true).catch(() => {});
+});
 
 function exportData() {
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
